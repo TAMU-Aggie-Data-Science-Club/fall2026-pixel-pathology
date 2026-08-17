@@ -1,0 +1,2 @@
+# This file keeps the git-ignored data/ folder present in the template.
+# Datasets go here locally but are never committed (see .gitignore and DATA.md).

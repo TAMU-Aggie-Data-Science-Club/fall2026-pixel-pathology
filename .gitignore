@@ -1,0 +1,27 @@
+# --- Project data ---------------------------------------------------------
+# The data/ folder is a local working area. Its CONTENTS are never committed
+# (data is often large, private, or licensed). The folder itself is kept in the
+# template via the .gitkeep sentinel below. DATA.md lives at the repo ROOT — it
+# is tracked and is intentionally NOT inside data/.
+data/*
+!data/.gitkeep
+
+# --- Agent / private working notes ----------------------------------------
+# Scratch planning files (see AGENTS.md) — never part of a PR.
+.planning/
+
+# --- Common noise ----------------------------------------------------------
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Python (adjust/remove for non-Python projects)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
