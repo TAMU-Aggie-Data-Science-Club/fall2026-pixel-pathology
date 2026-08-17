@@ -1,26 +1,63 @@
-# IDE Data Science Club — Project Template
+# Pixel Pathology — Intermediate
 
-A starter repository for **project managers (PMs)** in the IDE Data Science Club. Fork or "Use this template" to spin up a new project with the conventions, workflow, and scaffolding the club expects already in place.
+*ADSC Catalyst Project · Fall 2026*
 
-## What's in here
+## Overview
+
+Pixel Pathology trains a neural network to spot disease in medical images — skin lesions, retinal scans, or chest X-rays — and then makes it show its work with Grad-CAM heatmaps that highlight exactly what it noticed. The final artifact isn't "cancer: yes/no" — it's "here's the exact patch the model found worrying."
+
+## Objective
+
+Fine-tune a modern CNN on a real medical-imaging dataset with proper transfer learning, and pair every prediction with an interpretable Grad-CAM overlay in a small demo app.
+
+## Suggested tech stack
+
+- **Data processing:** Python, OpenCV, Pillow
+- **Modeling:** PyTorch (or TensorFlow) — CNN with transfer learning (ResNet50, EfficientNet-B0)
+- **Interpretability:** Grad-CAM heatmap overlays
+- **Visualization / demo:** Streamlit, Matplotlib
+- **Data sources:** Kaggle (ISIC skin cancer, APTOS retinopathy, NIH ChestX-ray14)
+
+See [`DATA.md`](DATA.md) for concrete data sources and how to access them.
+
+## What team members will gain
+
+- A model that diagnoses **and** explains itself — rare even in industry
+- Transfer-learning skills that show up in every computer-vision job posting
+- A project that could genuinely matter to someone's health
+
+## Suggested scope (v1)
+
+Pick **one** dataset. ISIC skin cancer or APTOS retinopathy are both smaller and more tractable than ChestX-ray14 for a semester timeline.
+
+Build:
+
+1. Data loader with proper class-balanced sampling and light augmentation,
+2. Transfer-learn ResNet50 or EfficientNet-B0 with a two-stage training recipe (head-only, then fine-tune),
+3. Robust evaluation: class-conditional accuracy, ROC/PR curves, calibration,
+4. Grad-CAM overlays generated per prediction and displayed in a Streamlit upload demo,
+5. A short evaluation writeup with failure-mode examples.
+
+**Out of scope for v1:** clinical validation, multi-dataset transfer, segmentation (this is classification + attribution), federated learning.
+
+**Important framing:** this is a learning project. It is **not** a diagnostic tool. Every artifact and the demo must be labeled as such.
+
+See [`DELIVERABLES.md`](DELIVERABLES.md) for the suggested deliverable breakdown and rough timeline.
+
+## Repository map
 
 | File / folder | Purpose |
 |---|---|
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | **Start here.** How the team runs the project on GitHub — PM vs. member roles, the issue → PR → `main` flow, branching, worktrees, and reviews. |
-| [`DELIVERABLES.md`](DELIVERABLES.md) | The PMs' estimated deliverables and a rough timeline. A living plan, not a contract. |
-| [`DATA.md`](DATA.md) | Where the project's data comes from, how to find sources, and how to think about using them. Tracked in git. |
-| [`data/`](data/) | Working folder for actual datasets. **Git-ignored** — data never gets committed. |
-| [`AGENTS.md`](AGENTS.md) | The strict, machine-facing version of the workflow, for AI coding agents. |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | **Start here.** How the team runs the project on GitHub — PM vs. member roles, the issue → PR → `main` flow, branching, worktrees, reviews. |
+| [`DELIVERABLES.md`](DELIVERABLES.md) | Suggested deliverables and rough timeline. A living plan, not a contract. |
+| [`DATA.md`](DATA.md) | Suggested data sources, how to access them, and the source register. |
+| [`data/`](data/) | Local working folder for datasets. **Git-ignored** — data is never committed. |
+| [`AGENTS.md`](AGENTS.md) | Machine-facing workflow rules for AI coding agents. |
 
-## How to use this template
+## Notes for PMs
 
-1. **Create your repo from it.** On GitHub, click **Use this template → Create a new repository** (or fork it), then clone your copy.
-2. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md).** Everyone on the team reads it; it's the operating manual.
-3. **Fill in [`DELIVERABLES.md`](DELIVERABLES.md)** with your project's real deliverables and dates.
-4. **Fill in [`DATA.md`](DATA.md)** with your actual data sources.
-5. **Turn on branch protection** for `main` (require a PR + one approval) and, ideally, **enable a code-review agent** (Codex or Claude auto-review) — see CONTRIBUTING.
-6. **Open your first issue** and run the flow.
+This README, [`DELIVERABLES.md`](DELIVERABLES.md), and [`DATA.md`](DATA.md) are **suggestions**, not commitments. Rewrite them as the team scopes the real project.
 
-## The one-paragraph version
+## Notes for members
 
-Every change starts as a GitHub **Issue**, gets built on a **branch** (organized as a small tree per issue, each slice optionally in its own **worktree**), is opened as a **pull request**, reviewed (by a teammate and, ideally, an auto-review agent), and merged **up the tree**. Only a **PM** merges the issue's integration branch into `main`. `main` is always in a known-good state. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full workflow.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before touching code. Then pick up an issue from the board.
