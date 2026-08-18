@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # GitHub Actions used by workflows in this repo
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Python dependencies (add or remove ecosystems per project — see
+  # https://docs.github.com/en/code-security/dependabot for options)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    versioning-strategy: "increase"

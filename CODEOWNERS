@@ -1,0 +1,26 @@
+# CODEOWNERS — project roster + review policy
+#
+# This file is BOTH the team roster AND the code-owner rule for this repo.
+# The rule at the bottom (starting with `*`) is what GitHub enforces:
+# it auto-requests review from the listed owners on any PR into `main`.
+
+# ── Project Managers (code owners for main-branch merges) ─────────────
+# Full name        GitHub handle    Email
+# ────────────────────────────────────────────────────────────────────
+# (add PMs here when the project starts, one per line)
+
+# ── Members ───────────────────────────────────────────────────────────
+# Full name        GitHub handle    Email
+# ────────────────────────────────────────────────────────────────────
+# (add members here as they join, one per line)
+
+# ── Review policy ─────────────────────────────────────────────────────
+# Everyone listed on the rule below is a Code Owner. GitHub will require
+# at least one of them to approve any PR targeting `main`.
+#
+# PMs: to grant a member the ability to approve main-merges, add their
+# @handle to the line below. Everyone else on the roster above can still
+# open PRs and review informally — but only handles below can satisfy
+# the main-branch review requirement.
+
+* @TAMU-Aggie-Data-Science-Club/officers

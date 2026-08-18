@@ -1,0 +1,7 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discussion
+    # Update this URL when the project repo is created — replace
+    # fall2026-pixel-pathology with your actual repo name.
+    url: https://github.com/TAMU-Aggie-Data-Science-Club/fall2026-pixel-pathology/discussions
+    about: Have an idea to talk through? Start a Discussion instead of an Issue.

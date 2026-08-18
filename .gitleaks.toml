@@ -1,0 +1,27 @@
+# Gitleaks configuration for ADSC project repos.
+# Uses the default ruleset plus a small project-friendly allowlist to avoid
+# obvious false positives in docs and example files.
+# See https://github.com/gitleaks/gitleaks#configuration for options.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Project-friendly allowlist for docs and example placeholders"
+paths = [
+  '''(?i)README\.md$''',
+  '''(?i)DATA\.md$''',
+  '''(?i)DELIVERABLES\.md$''',
+  '''(?i)CONTRIBUTING\.md$''',
+  '''(?i)AGENTS\.md$''',
+  '''(?i)CODEOWNERS$''',
+  '''\.example$''',
+  '''\.example\.env$''',
+]
+regexes = [
+  '''(?i)example.*key''',
+  '''(?i)dummy''',
+  '''(?i)placeholder''',
+  '''(?i)your[-_]?api[-_]?key''',
+  '''\$\{[A-Z_]+\}''',
+]
