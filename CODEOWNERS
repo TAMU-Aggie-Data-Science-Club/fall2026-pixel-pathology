@@ -1,31 +1,12 @@
-﻿# CODEOWNERS â€” project roster + review policy
+# CODEOWNERS - review policy for this repository.
 #
-# This file is BOTH the team roster AND the code-owner rule for this repo.
-# The rule at the bottom (starting with `*`) is what GitHub enforces:
-# it auto-requests review from the listed owners on any PR into `main`.
+# PMs are the members of the GitHub team fall2026-pixel-pathology-pm.
+# Adding someone to that team makes them a Code Owner here; this file does
+# not need to change. Only officers may edit this file, .github/, or
+# .gitleaks.toml. The last matching pattern wins.
 
-# â”€â”€ Project Managers (code owners for main-branch merges) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Full name        GitHub handle    Email
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# (add PMs here when the project starts, one per line)
+* @TAMU-Aggie-Data-Science-Club/officers @TAMU-Aggie-Data-Science-Club/fall2026-pixel-pathology-pm
 
-# â”€â”€ Members â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Full name        GitHub handle    Email
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# (add members here as they join, one per line)
-
-# â”€â”€ Review policy â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Everyone listed on the rule below is a Code Owner. GitHub will require
-# at least one of them to approve any PR targeting `main`.
-#
-# PMs: to grant a member the ability to approve main-merges, add their
-# @handle to the line below.
-
-* @TAMU-Aggie-Data-Science-Club/officers
-
-# â”€â”€ Officer-locked paths â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# Workflows and secret-scanning config carry security implications.
-# Changes here require officer approval regardless of who the PMs are.
-
-/.github/       @TAMU-Aggie-Data-Science-Club/officers
-/.gitleaks.toml @TAMU-Aggie-Data-Science-Club/officers
+/CODEOWNERS      @TAMU-Aggie-Data-Science-Club/officers
+/.github/        @TAMU-Aggie-Data-Science-Club/officers
+/.gitleaks.toml  @TAMU-Aggie-Data-Science-Club/officers
