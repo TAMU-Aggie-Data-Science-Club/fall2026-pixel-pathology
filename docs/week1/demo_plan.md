@@ -31,11 +31,21 @@ Not handled yet (open questions): what the app shows for a non-image or unreadab
 
 ## 3. Grad-CAM explanation
 
-<!-- TODO (owners: Grad-CAM pair): short explanation in your own words, with source links. -->
+Grad-CAM is a method that helps show us which parts of an image a neural network paid attention to when it made a prediction. It looks at the last convolutional layer and uses gradients to measure how much each feature map contributed. It combines those feature maps into a single heatmap and overlays it on the original. Warmer colors means that they contributed more to the prediction while, cooler colors means those regions contributed less.
+
+Putting it in context to this project it means that after a user uploads an image and the model predicts one of the seven classes, we will show the heatmap next to the prediction so users can see which regions influenced it. Grad-CAM will highlight the regions that contributed to the prediction. 
 
 ## 4. Grad-CAM limitations
 
-<!-- TODO (owners: Grad-CAM pair): two limitations, with source links. -->
+Limitation #1
+Grad Cams highlight only parts or fragments of an object rather than outlining its entire shape. This happens because the averaging of pixel gradients can dilute contributions from feature maps with smaller spatial footprints.
+
+[Source]https://www.alphaxiv.org/abs/1710.11063
+
+Limitation #2
+When one image has multiple occurences of a class or distinct objects Grad-CAM will not be able to identify all of them accurately because it often focuses on just one instance
+
+[Source]https://www.alphaxiv.org/abs/1710.11063
 
 ## 5. What the app needs from other teams
 
