@@ -4,8 +4,8 @@ Team: Explainability & Application
 
 ## 1. Interface sketch
 
-![Proposed demo interface](demo_pre.pdf)
-(demo_post.pdf)
+![Proposed demo interface](demo_pre.png)
+(demo_post.png)
 
 The demo is a single-page Streamlit app with one vertical flow:
 
