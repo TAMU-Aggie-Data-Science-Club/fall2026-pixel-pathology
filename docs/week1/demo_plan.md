@@ -4,8 +4,9 @@ Team: Explainability & Application
 
 ## 1. Interface sketch
 
-![Proposed demo interface](demo_pre.png)
-(demo_post.png)
+<img src="demo_pre.png" alt="Demo before upload" width="400">
+<img src="demo_post.png" alt="Demo after upload" width="400">
+
 
 The demo is a single-page Streamlit app with one vertical flow:
 
