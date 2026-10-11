@@ -39,11 +39,25 @@ Not handled yet (open questions): what the app shows for a non-image or unreadab
 
 ## 5. What the app needs from other teams
 
-<!-- TODO (owner: inputs/notice member): preprocessing, class order, trained model, and anything else. -->
+### From Data & Analysis (Issue 4)
+* **Preprocessing Values & Pipeline:** Think of these as the numerical values related to pre-processing. Main ones include image resolution, any mean/sd normalization values, and maybe color channel expectations (likely RGB).
+* **Class Mapping & Order:** Explicit index-to-label mapping for all 7 of the HAM10000 classes (e.g., `0: 'akiec'`, `1: 'bcc'`, `2: 'bkl'`, `3: 'df'`, `4: 'mel'`, `5: 'nv'`, `6: 'vasc'`) along w/ full clinical display names for UI elements.
+* **Sample Test Images:** A set of 5–10 representative, git-ignored validation images covering different lesion types for testing the app UI.
+
+### From Modeling & Experiments (Issue 5)
+* **Trained Model Weights:** Exported model artifact (`.pth` or `.pt` PyTorch file) trained on HAM10000.
+* **Model Architecture & Target Layer Name:** Exact PyTorch model definition or setup script, including the target convolutional layer (e.g., `model.layer4[-1]`) required for hooking Grad-CAM gradients.
+* **Evaluation Context:** Guidance on any confidence thresholds or warning metrics to display if predictions fall below a certainty baseline. This serves to make the output more human-friendly. 
+
+---
 
 ## 6. Educational-use notice
 
-<!-- TODO (owner: inputs/notice member): exact wording that will appear in the demo. -->
+> **Disclaimer & Educational Notice**
+> 
+> **FOR EDUCATIONAL AND DEMONSTRATION PURPOSES ONLY.**
+> 
+> This web application is a student learning project created for the Aggie Data Science Club (ADSC). It is **not** a clinical diagnostic tool, medical device, or replacement for professional medical advice, diagnosis, or treatment. Do **not** use this as replacement for a medical professional, and always seek the advice of a qualified dermatologist with any questions regarding skin conditions or lesions.
 
 ## Sources
 
@@ -54,3 +68,4 @@ https://claude.com/product/design
 
 <!-- Each member: what you contributed and a brief reflection. -->
 Evan: created the demo sketch and explained the app flow
+Abhi: finished the educational-use notice & what we need from other issues/teams
