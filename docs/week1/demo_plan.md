@@ -68,4 +68,8 @@ https://claude.com/product/design
 
 <!-- Each member: what you contributed and a brief reflection. -->
 Evan: created the demo sketch and explained the app flow
+
+Haasika: explained the concept of Grad-CAM and highlighted limitations
+
 Abhi: finished the educational-use notice & what we need from other issues/teams
+
