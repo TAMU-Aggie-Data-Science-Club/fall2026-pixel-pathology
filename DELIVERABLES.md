@@ -59,71 +59,6 @@ PMs will ensure DATA.md records the source, downloaded version, access instructi
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
 
-## Week 1 — Quick team assignments
-
-**Due Sunday, October 11, 2026, at noon Central.**
-
-These assignments were intentionally small to help members get started. Work together on one submission per subteam, with an identifiable contribution from every member.
-
-No trained model, working app, or completed Grad-CAM implementation is required this week.
-
-### Team 1: Data & Analysis
-
-**Submit:** notebooks/week1_data_exploration.ipynb
-
-Include:
-1. Code that loads the HAM10000 metadata.
-2. A short explanation of the image_id, lesion_id, and dx columns.
-3. A table or chart showing the number of images in each class.
-4. Three observations about the dataset.
-5. A short explanation of why images sharing a lesion_id must remain in the same train, validation, or test split.
-
-Suggested division:
-- Two members load the CSV and explain its columns.
-- Two members produce and explain the class counts.
-- One member writes the split explanation and checks that the notebook runs.
-- Everyone adds an observation or explanation and reviews the shared output.
-
-Only the metadata is needed for this week's assignment. Displaying sample images is optional.
-
-### Team 2: Modeling & Experiments
-
-**Submit:** docs/week1/modeling_plan.md
-
-Include:
-1. A short explanation of transfer learning in your own words.
-2. One proposed pretrained CNN, such as ResNet or EfficientNet, and why it is a reasonable starting point.
-3. An explanation of how the model would be adapted to seven lesion classes.
-4. Two proposed evaluation metrics and what each measures.
-5. An explanation of why overall accuracy alone could be misleading with uneven class sizes.
-
-Suggested division:
-- Two members explain transfer learning and adapting the classifier, and maybe researches a starting model as well.
-- Two members explain evaluation metrics and class imbalance.
-
-Include links to the sources you used. Installing PyTorch or training a model is optional this week.
-
-### Team 3: Explainability & Application
-
-**Submit:** docs/week1/demo_plan.md
-
-Include:
-1. A simple sketch of the proposed demo, embedded in or linked from the Markdown file.
-2. The planned flow: image upload, prediction, and heatmap display.
-3. A short explanation of Grad-CAM in your own words.
-4. Two limitations of Grad-CAM.
-5. A list of what the app will need from the other teams, including preprocessing, class order, and a trained model.
-6. The educational-use notice that will appear in the demo.
-
-Suggested division:
-- Two members sketch the interface and explain its flow.
-- Two members explain Grad-CAM and its limitations.
-- One member documents the required inputs and educational-use notice.
-
-Include links to the sources you used. Building the app is optional this week.
-
-If access or GitHub problems prevent a contribution, contact a PM before the deadline.
-
 ## Week 2 — Start the implementation
 
 **Due Sunday, October 18, 2026, at noon Central.**
@@ -240,6 +175,71 @@ Suggested shared tasks: image input and preview; layout, error handling, and pre
 - [ ] All groups use the same class mapping.
 - [ ] Modeling and Explainability & App have agreed on prediction preprocessing and the model interface.
 - [ ] Each group has submitted code through PRs, documented contributions, and reported remaining blockers.
+
+## Week 1 — Quick team assignments
+
+**Due Sunday, October 11, 2026, at noon Central.**
+
+These assignments were intentionally small to help members get started. Work together on one submission per subteam, with an identifiable contribution from every member.
+
+No trained model, working app, or completed Grad-CAM implementation is required this week.
+
+### Team 1: Data & Analysis
+
+**Submit:** notebooks/week1_data_exploration.ipynb
+
+Include:
+1. Code that loads the HAM10000 metadata.
+2. A short explanation of the image_id, lesion_id, and dx columns.
+3. A table or chart showing the number of images in each class.
+4. Three observations about the dataset.
+5. A short explanation of why images sharing a lesion_id must remain in the same train, validation, or test split.
+
+Suggested division:
+- Two members load the CSV and explain its columns.
+- Two members produce and explain the class counts.
+- One member writes the split explanation and checks that the notebook runs.
+- Everyone adds an observation or explanation and reviews the shared output.
+
+Only the metadata is needed for this week's assignment. Displaying sample images is optional.
+
+### Team 2: Modeling & Experiments
+
+**Submit:** docs/week1/modeling_plan.md
+
+Include:
+1. A short explanation of transfer learning in your own words.
+2. One proposed pretrained CNN, such as ResNet or EfficientNet, and why it is a reasonable starting point.
+3. An explanation of how the model would be adapted to seven lesion classes.
+4. Two proposed evaluation metrics and what each measures.
+5. An explanation of why overall accuracy alone could be misleading with uneven class sizes.
+
+Suggested division:
+- Two members explain transfer learning and adapting the classifier, and maybe researches a starting model as well.
+- Two members explain evaluation metrics and class imbalance.
+
+Include links to the sources you used. Installing PyTorch or training a model is optional this week.
+
+### Team 3: Explainability & Application
+
+**Submit:** docs/week1/demo_plan.md
+
+Include:
+1. A simple sketch of the proposed demo, embedded in or linked from the Markdown file.
+2. The planned flow: image upload, prediction, and heatmap display.
+3. A short explanation of Grad-CAM in your own words.
+4. Two limitations of Grad-CAM.
+5. A list of what the app will need from the other teams, including preprocessing, class order, and a trained model.
+6. The educational-use notice that will appear in the demo.
+
+Suggested division:
+- Two members sketch the interface and explain its flow.
+- Two members explain Grad-CAM and its limitations.
+- One member documents the required inputs and educational-use notice.
+
+Include links to the sources you used. Building the app is optional this week.
+
+If access or GitHub problems prevent a contribution, contact a PM before the deadline.
 
 ## GitHub structure
 
