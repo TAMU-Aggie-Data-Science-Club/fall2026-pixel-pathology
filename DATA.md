@@ -151,4 +151,4 @@ Any published image examples must follow the dataset's reuse and attribution ter
 ## References
 
 - Dataset: https://doi.org/10.7910/DVN/DBW86T
-- Original paper: https://doi.org/10.1038/sdata.2018.161t fetches and builds these folders** is what must be committed and reproducible — not the data itself.
+- Original paper: https://doi.org/10.1038/sdata.2018.161
