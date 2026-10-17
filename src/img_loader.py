@@ -1,0 +1,65 @@
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
+from PIL import Image
+import pandas as pd
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# manual preprocessing, allows for image augmentation
+# TODO: cutout after flip
+transform = transforms.Compose([
+    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(degrees=(0, 180)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
+
+class SkinLesionDataset(Dataset):
+    def __init__(self, manifest_path, image_dir1, image_dir2, transform=None):
+        self.data = pd.read_csv(manifest_path)
+        self.transform = transform
+
+        # TODO: Discuss class mapping w/ data team
+        self.class_map = {
+            'bkl': 0,
+            'nv': 1,
+            'df': 2,
+            'mel': 3,
+            'vasc': 4,
+            'bcc': 5,
+            'akiec': 6
+        }
+
+        # TODO: Discuss image paths w/ data team
+        self.image_paths = {}
+        for image_dir in [image_dir1, image_dir2]:
+            for filename in os.listdir(image_dir):
+                image_id = filename.replace('.jpg', '')
+                self.image_paths[image_id] = os.path.join(image_dir, filename)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        row = self.data.iloc[idx]
+        image_path = self.image_paths[row['image_id']]
+        label = self.class_map[row['dx']]
+        image = Image.open(image_path).convert('RGB')
+        if self.transform:
+            image = self.transform(image)
+        return image, label
+
+dataset = SkinLesionDataset(
+    os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'), # TODO: Discuss manifest w/ data team
+    os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
+    os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
+    transform=transform
+)
+loader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+# Example output for an image
+print(dataset[10005])
