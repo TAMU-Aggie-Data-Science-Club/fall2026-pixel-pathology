@@ -9,7 +9,7 @@ def show_educational_notice():
         "This web application is a student learning project created for the "
         "Aggie Data Science Club (ADSC). It is **not** a clinical diagnostic "
         "tool, medical device, or replacement for professional medical advice, "
-        "diagnosis, or treatment. Do **not** use this as replacement for a "
+        "diagnosis, or treatment. Do **not** use this as a replacement for a "
         "medical professional, and always seek the advice of a qualified "
         "dermatologist with any questions regarding skin conditions or lesions."
     )
