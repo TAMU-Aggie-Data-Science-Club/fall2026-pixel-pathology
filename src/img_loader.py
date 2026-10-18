@@ -1,21 +1,16 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms
+from torchvision.models import ResNet50_Weights
 from PIL import Image
 import pandas as pd
 import os
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# manual preprocessing, allows for image augmentation
-# TODO: cutout after flip
-transform = transforms.Compose([
-    transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(degrees=(0, 180)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+# Resizes to 256 x 256 and crops to 224 x 224
+# Normalized using mean=[0.485, 0.456, 0.406] and std=[0.229, 0.224, 0.225]
+# Details found here: (https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet50.html#torchvision.models.ResNet50_Weights)
+weights = ResNet50_Weights.IMAGENET1K_V1
+transform = weights.transforms()
 
 
 class SkinLesionDataset(Dataset):
@@ -53,13 +48,14 @@ class SkinLesionDataset(Dataset):
             image = self.transform(image)
         return image, label
 
-dataset = SkinLesionDataset(
-    os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'), # TODO: Discuss manifest w/ data team
-    os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
-    os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
-    transform=transform
-)
-loader = DataLoader(dataset, batch_size=32, shuffle=True)
+if __name__ == "__main__":  
+    dataset = SkinLesionDataset(
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'), # TODO: Discuss manifest w/ data team
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
+        transform=transform
+    )
+    loader = DataLoader(dataset, batch_size=32, shuffle=True)
 
-# Example output for an image
-print(dataset[10005])
+    # Example output for an image
+    print(dataset[10005])
