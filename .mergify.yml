@@ -1,0 +1,19 @@
+# Managed by the ADSC officer tooling. Do not hand-edit.
+#
+# Mergify reads this file from the DEFAULT branch only, so this one copy governs
+# pull requests into any base branch. That is why it replaced CODEOWNERS, which is
+# read from each pull request's base branch and kept pinging officers.
+#
+# Officers are deliberately absent: they keep admin on every repo and can review or
+# merge anything, but they are never auto-requested.
+
+pull_request_rules:
+  - name: Request PM review on pull requests into main
+    conditions:
+      - base = main
+      - -draft
+      - -closed
+    actions:
+      request_reviews:
+        teams:
+          - fall2026-pixel-pathology-pm
