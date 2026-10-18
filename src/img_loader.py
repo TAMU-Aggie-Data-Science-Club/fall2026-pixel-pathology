@@ -20,13 +20,13 @@ class SkinLesionDataset(Dataset):
 
         # TODO: Discuss class mapping w/ data team
         self.class_map = {
-            'bkl': 0,
-            'nv': 1,
-            'df': 2,
-            'mel': 3,
-            'vasc': 4,
-            'bcc': 5,
-            'akiec': 6
+            'akiec': 0,
+            'bcc': 1,
+            'bkl': 2,
+            'df': 3,
+            'mel': 4,
+            'nv': 5,
+            'vasc': 6
         }
 
         # TODO: Discuss image paths w/ data team
