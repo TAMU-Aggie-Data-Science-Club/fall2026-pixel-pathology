@@ -18,9 +18,7 @@ We will have three subteams of approximately five members. Members can express p
 | Modeling & Experiments | Transfer learning, baseline training, controlled experiments, evaluation, and model documentation. |
 | Explainability & Application | Grad-CAM implementation, heatmap checks, Streamlit interface, and integration with the trained model. |
 
-Each subteam will divide work into individual or paired tasks and choose a working coordinator to communicate progress and blockers.
-
-Coordinators also contribute to the work. They are not expected to complete the entire team's assignment.
+Each subteam will divide work into individual or paired tasks, name an owner for each task, and share progress and blockers with the PMs. No team lead or coordinator is required.
 
 ### PM responsibilities
 
@@ -58,6 +56,154 @@ The metadata contains 10,015 image records across seven classes. Full image-to-m
 PMs will ensure DATA.md records the source, downloaded version, access instructions, citation, and applicable license/use terms before the Week 1 submission.
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
+
+## Week 3 — Train our first baseline and connect the app
+
+**Due Sunday, October 25, 2026, at noon Central.**
+**Progress sync: Friday, October 23, 6–7 PM Central in Project Sync.**
+
+### This week's goal
+
+Turn our existing code into a working first version:
+- Data provides verified image splits.
+- Modeling trains and evaluates one baseline.
+- App displays real baseline predictions.
+
+Each group must post its task breakdown on its Week 3 issue before starting. Give everyone an identifiable contribution. Members working together on one task may share a branch.
+
+### Shared standards
+
+- Model: ResNet50 with IMAGENET1K_V2 weights.
+- Class order: akiec, bcc, bkl, df, mel, nv, vasc.
+- Use CLASS_NAMES and CLASS_TO_IDX from src/model.py.
+- Use the agreed V2 prediction preprocessing; keep random augmentation for training only.
+- Keep the existing 70/15/15 lesion-grouped split with seed 42.
+- Prepare images when loading them; do not save preprocessed copies.
+
+Local data layout:
+- data/raw/HAM10000_metadata.csv
+- data/raw/HAM10000_images_part_1/
+- data/raw/HAM10000_images_part_2/
+
+Proposed split-file convention, pending PM confirmation:
+- data/processed/splits.csv
+- Columns: image_id, lesion_id, dx, split
+- Split values: train, val, test
+
+Commit code and instructions. Keep raw images, generated datasets/manifests, and model checkpoints out of GitHub.
+
+### Group 1: Data & Analysis
+
+**Goal:** Give Modeling a verified, reproducible split file it can use for training.
+
+#### URGENT — Week 2 catch-up
+
+**Target completion: Thursday, October 22, so Modeling has time to train.**
+
+- Run the image audit on both image folders and record the results.
+- Address missing or unreadable images before finalizing the splits, without modifying raw files.
+- Save the split file locally under data/processed/ using the confirmed format.
+- Move reusable audit and split code from Colab into src/data/ so it runs locally against data/raw/. Keep the exploration notebook in notebooks/.
+- Coordinate with PMs to merge one of duplicate PRs #31 and #33, credit all four contributors, and close the other.
+- Open a PR for Melanie's docs/week2/README.md and make sure it matches the actual results.
+- Keep generated audit outputs outside data/raw/.
+
+#### Week 3 work
+
+- Keep the existing split method; a new splitting experiment is not required.
+- Verify image coverage, no duplicate assignments, no lesion overlap, and reproducibility.
+- Report class counts for training, validation, and test splits.
+- Agree on one simple training-imbalance approach with Modeling. No comparison experiment is required.
+- Provide the command and data-path instructions needed to generate the split file.
+
+**Talk to Modeling:** confirm it can generate and load the split file.
+**Talk to App:** confirm sample-image access and known-label lookup.
+
+**Submit:** reusable code in src/data/, exploration in notebooks/, and brief instructions/results in docs/week3/.
+
+**Complete when:** the audit has recorded results, split generation runs, verification passes, and Modeling confirms the handoff works.
+
+### Group 2: Modeling & Experiments
+
+**Goal:** Train one baseline and make its predictions available to App.
+
+#### URGENT — Week 2 handoff and cleanup
+
+Week 2 implementation requirements are complete. Do not repeat the first-training-step assignment.
+
+- Ensure the combined Week 2 submission includes the loader, preprocessing, seven-output model, and recorded real-image training-step results.
+- Remove the stale class-mapping TODO comment in src/img_loader.py.
+- Fix the manifest example in docs/week2/training_step.md to include .csv.
+- Coordinate with PMs on reviewing and publishing the Week 2 integration branch.
+
+#### Week 3 work
+
+- Update the loader to read the confirmed split file and select training or validation rows.
+- Use the shared class mapping from src/model.py.
+- Freeze the pretrained backbone and train only the seven-class output layer. Keep the frozen backbone's running statistics fixed.
+- Use one imbalance approach agreed with Data.
+- Train on training images and use validation results to choose the checkpoint. Leave the test set untouched.
+- Report validation macro F1 and a confusion matrix.
+- Save the checkpoint locally and document how teammates obtain or reproduce it.
+- Provide reusable prediction functions that load the checkpoint, prepare an image, and return seven probabilities in the agreed class order.
+- Record the training command, dependencies, settings, and results.
+
+**Talk to Data:** confirm split access and imbalance handling.
+**Talk to App:** agree on prediction function inputs/outputs and checkpoint location early in the week.
+
+Multiple models, extensive tuning, and fine-tuning the backbone are not required.
+
+**Submit:** code in src/ and brief instructions/results in docs/week3/.
+
+**Complete when:** one baseline training run finishes, validation results are recorded, and the prediction function works on a real image.
+
+### Group 3: Explainability & App
+
+**Goal:** Finish the page and connect real baseline predictions.
+
+#### URGENT — Week 2 catch-up
+
+- Wire known-label lookup into the page.
+- Replace the personal Windows path in app/known_label.py with the shared configurable metadata path.
+- Remove the hardcoded test lookup.
+- Clearly identify dataset labels as known labels, separate from predictions.
+- Add a contributions section to docs/week2/app.md.
+- Have another member run the app using the documented instructions.
+- Coordinate with PMs to open the completed Week 2 integration PR into main.
+
+#### Week 3 work
+
+- Connect Modeling's prediction functions to the existing page.
+- Show the predicted class using its readable name, its model probability, and all seven probabilities.
+- Keep known labels and model predictions clearly separate.
+- Use Modeling's prediction preprocessing and class order.
+- If the checkpoint is missing, show a clear pending message and keep image viewing functional.
+- Keep the educational-use notice visible.
+- Keep Grad-CAM marked pending; heatmaps are planned for Week 4.
+- Verify the combined upload/sample-selection, image display, label lookup, and prediction flow.
+
+**Talk to Modeling:** agree on the prediction interface and checkpoint access.
+**Talk to Data:** confirm sample-image paths and label lookup.
+
+Split displays, confidence thresholds, extra styling, and Grad-CAM are not required.
+
+**Submit:** code in app/ and brief run instructions in docs/week3/.
+
+**Complete when:** another member can launch the app and view a real baseline prediction. If the model handoff is delayed, submit the finished interface with a clear pending state and document the blocker.
+
+### GitHub and completion requirements
+
+- Create task branches from the integration branch linked to your Week 3 issue.
+- Open task PRs into that integration branch.
+- Have a teammate or PM review and approve before merging.
+- Identify each member's contribution and include run instructions and evidence.
+- PMs review combined integration PRs into main.
+- Keep Week 2 issues #21–23 open until their required work is completed and merged into main.
+- Report blockers early rather than waiting until Sunday.
+
+### Next steps after Week 3
+
+Plan to compare fine-tuning against this baseline and add Grad-CAM in Week 4. Each group should include a short note in its submission describing its next task and any dependency on another group.
 
 ## Week 2 — Start the implementation
 
@@ -308,7 +454,7 @@ This is a working plan. Timing may change based on team progress, compute access
 | --- | --- | --- | --- |
 | 1 | Metadata exploration and class counts | Transfer-learning and evaluation plan | Demo sketch and Grad-CAM explanation |
 | 2 | Dataset audit and lesion-grouped split code | Image loader, seven-class CNN, and one training step | Streamlit image viewer and shared prediction interface |
-| 3 | Audit splits, preprocessing, and class balance | Train and evaluate a frozen-backbone baseline | Connect baseline predictions to the demo |
+| 3 | Finish image audit and export verified existing splits; scope reduced to unblock training | Train one frozen-backbone baseline; validation macro F1 and confusion matrix | Finish Week 2 page and connect baseline predictions |
 | 4 | Analyze baseline errors and image artifacts | Fine-tune and compare with baseline | Implement Grad-CAM overlays |
 | 5 | Examine errors by class and available metadata | Run controlled validation experiments | Integrate predictions and heatmaps |
 | 6 | Document dataset limitations | Select model and assess calibration | Check heatmaps and test app behavior |
@@ -329,4 +475,5 @@ Changes to preprocessing, label order, or model interfaces must be coordinated a
 - Grad-CAM overlays with documented limitations.
 - Streamlit demonstration app labeled for educational use.
 - Setup instructions, final presentation, and project handoff.
+
 
