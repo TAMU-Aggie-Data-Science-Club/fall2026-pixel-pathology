@@ -39,13 +39,13 @@ streamlit run app/app.py
 
 ## Contributions
 
-- **Hiren Kotapati — image display:** Added `show_image`, which shows an image as
+- **Hiren — image display:** Added `show_image`, which shows an image as
   RGB and gives a friendly error for unreadable files.
 - **Abhlnaw — educational notice and pending sections:** Added the educational-use
   notice and the pending prediction and Grad-CAM sections.
-- **Kaushik Vootukur — notice wording:** Fixed the wording of the educational
+- **Kaushik— notice wording:** Fixed the wording of the educational
   disclaimer.
-- **Emily Salazar — known-label lookup:** Wrote the first version of the dataset
+- **Emily — known-label lookup:** Wrote the first version of the dataset
   label lookup from the HAM10000 metadata.
 - **Evan — page and label display:** Built the Streamlit page with image upload and
   HAM10000 sample selection, then connected the known-label lookup to the page as
