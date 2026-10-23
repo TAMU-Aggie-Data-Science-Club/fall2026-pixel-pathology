@@ -1,26 +1,20 @@
-import pandas as pd
+import os
 from pathlib import Path
-import streamlit as st
 
-# get values from csv
-# get the image id
-# get the dx value from the image id
-# display the dx label
+import pandas as pd
 
-table = pd.read_csv(r"C:\Users\emily\OneDrive\Desktop\fall2026-pixel-pathology\dataversefiles\HAM10000_metadata")
-table = table.set_index("image_id")
+METADATA_PATH = Path(os.environ.get("HAM10000_METADATA_PATH", "data/raw/HAM10000_metadata.csv")).expanduser()
+if not METADATA_PATH.is_absolute():
+    METADATA_PATH = Path(__file__).resolve().parent.parent / METADATA_PATH
+
 
 def get_dataset_label(filename):
-    image_id = Path(filename).stem
-    if (image_id in table.index):
-        return table.loc[image_id, "dx"]
-    else:
+    """Return the image's known dx label, or None if metadata or its ID is absent."""
+    if not METADATA_PATH.is_file():
         return None
 
-label = get_dataset_label("ISIC_9999999.jpg")
-
-st.subheader("Dataset label")
-if label is not None:
-    st.write(f"Dataset label is known: {label}")
-else:
-    st.info("No dataset label avalible for this image")
+    table = pd.read_csv(METADATA_PATH).set_index("image_id")
+    image_id = Path(filename).stem
+    if image_id in table.index:
+        return table.loc[image_id, "dx"]
+    return None
