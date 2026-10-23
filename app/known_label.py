@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -5,13 +6,15 @@ import streamlit as st
 
 from notices import CLASS_NAMES
 
-METADATA_PATH = Path(__file__).resolve().parent.parent / "data" / "raw" / "HAM10000_metadata.csv"
+METADATA_PATH = Path(os.environ.get("HAM10000_METADATA_PATH", "data/raw/HAM10000_metadata.csv")).expanduser()
+if not METADATA_PATH.is_absolute():
+    METADATA_PATH = Path(__file__).resolve().parent.parent / METADATA_PATH
 
 
 @st.cache_data
 def load_labels():
     """Return {image_id: dx} from the HAM10000 metadata, or None if the CSV is missing."""
-    if not METADATA_PATH.exists():
+    if not METADATA_PATH.is_file():
         return None
     table = pd.read_csv(METADATA_PATH)
     return dict(zip(table["image_id"], table["dx"]))
