@@ -21,6 +21,14 @@ def build_model(num_classes=NUM_CLASSES, pretrained=True):
     """
     weights = models.ResNet50_Weights.IMAGENET1K_V2 if pretrained else None
     model = models.resnet50(weights=weights)
+
+    '''
+    Head-only training -- freezes pretrained backbone and only train last output layer
+        - keeps frozen backbone's running statistics fixed
+    '''
+    for param in model.parameters():
+        param.requires_grad = False;
+
     model.fc = nn.Linear(model.fc.in_features, num_classes)
     return model
 
