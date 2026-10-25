@@ -73,4 +73,5 @@ def train_model(num_epoch=10):
         val_loss = evaluate(model, validation_loader, device)
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "baseline_model.pt")
+            torch.save(model.state_dict(), "baseline_model.pt") # TODO: Discuss model path
+            
