@@ -113,7 +113,7 @@ def train_model(num_epoch=10):
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "test.pt") # TODO: Discuss model path
+            torch.save(model.state_dict(), "baseline_model.pt") # TODO: Discuss model path
             print("Saved as new baseline model.")
         
         elapsed = time.time() - start_time
