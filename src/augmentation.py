@@ -1,6 +1,8 @@
 import torch 
+import os
 from torchvision import transforms
 from img_loader import SkinLesionDataset
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Image augmentation: allows us to get 'new' data from existing data
 # this is for training, DO NOT use for prediction; test transfromations in a stepwise fashion
@@ -14,9 +16,10 @@ augmentation = transforms.Compose([
     
 ])
 
-def get_augmented_dataset(manifest_path, image_dir1, image_dir2):
+def get_augmented_dataset(split_path, image_dir1, image_dir2):
     return SkinLesionDataset(
-        manifest_path,
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
+        split_path,
         image_dir1,
         image_dir2,
         transform=augmentation
