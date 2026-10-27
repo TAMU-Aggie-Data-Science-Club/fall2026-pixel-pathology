@@ -1,5 +1,7 @@
 """Seven-class HAM10000 classifier built on an ImageNet-pretrained ResNet-50."""
 
+import os
+
 import torch.nn as nn
 from torchvision import models
 
@@ -9,6 +11,11 @@ from torchvision import models
 CLASS_NAMES = ["akiec", "bcc", "bkl", "df", "mel", "nv", "vasc"]
 CLASS_TO_IDX = {name: idx for idx, name in enumerate(CLASS_NAMES)}
 NUM_CLASSES = len(CLASS_NAMES)
+
+# Local, git-ignored location of the trained baseline. Training writes it and
+# the prediction functions (and app) read it. See docs/week3/checkpoint_and_prediction.md.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CHECKPOINT_PATH = os.path.join(BASE_DIR, "models", "baseline_resnet50.pt")
 
 
 def build_model(num_classes=NUM_CLASSES, pretrained=True):
