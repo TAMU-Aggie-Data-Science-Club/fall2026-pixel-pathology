@@ -8,7 +8,7 @@ from torchvision.models import ResNet50_Weights
 
 from img_loader import SkinLesionDataset
 from augmentation import get_augmented_dataset
-from model import build_model
+from model import CHECKPOINT_PATH, CLASS_NAMES, build_model
 from training_step import train_one_step
 
 import os
@@ -113,12 +113,15 @@ def train_model(num_epoch=10):
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "baseline_model.pt") # TODO: Discuss model path
-            print("Saved as new baseline model.")
-        
-        elapsed = time.time() - start_time
-        print(f"- time: {elapsed:.1f}s\n\n")
+            # Keep the class order with the weights so predict.py can check it.
+            os.makedirs(os.path.dirname(CHECKPOINT_PATH), exist_ok=True)
+            torch.save({
+                "model_state_dict": model.state_dict(),
+                "class_names": CLASS_NAMES,
+                "epoch": epoch + 1,
+                "val_loss": val_loss,
+            }, CHECKPOINT_PATH)
+
 
 if __name__ == "__main__":
     train_model()
-            

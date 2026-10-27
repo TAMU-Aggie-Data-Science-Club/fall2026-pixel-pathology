@@ -23,6 +23,12 @@ def train_one_step(model, images, labels, optimizer):
         raise ValueError("Class labels must be integers from 0 through 6.")
 
     model.train()
+    
+    # Keep the frozen bacbone's running statistics fixed by putting BatchNorm in eval mode
+    for module in model.modules():
+        if isinstance(module, nn.BatchNorm2d):
+            module.eval()
+
     optimizer.zero_grad(set_to_none=True)
     head_before = model.fc.weight.detach().clone()
 
