@@ -72,3 +72,23 @@ recognition of the rarer classes.
 For Week 4, reuse this evaluator to compare the fine-tuned model
 against this baseline on the same validation split. This depends
 on the team's next trained checkpoint.
+
+## Unified split-file verification — October 28
+
+Generated data/processed/splits.csv using Data's create_splits.py
+from issue-40/integration with seed 42. Verified unique image IDs,
+no lesions shared across splits, and an exact match between all
+1,519 validation image IDs, lesion IDs, and labels and the earlier
+validation manifest.
+
+Used SkinLesionDataset with splits_path="data/processed/splits.csv"
+and split="val". A real-image batch loaded with shape (16, 3, 224, 224)
+and labels of shape (16,).
+
+Reevaluated the original baseline_model.pt using the unified loader.
+Macro F1 remained 0.23914343827718973, and the confusion matrix and
+class order matched the original saved results exactly. No weighted
+sampling or random augmentation was used for validation.
+
+This verifies the evaluation path with the unified split file.
+It does not verify the corrected training run or prediction interface.
