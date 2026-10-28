@@ -11,3 +11,7 @@ The baseline model was trained using the training split file, and the images wer
 - images were randomly rotated between 0 to 180 degrees
 
 # imbalance approach
+
+For week 3, we did not apply any imbalance approches to our training data. This correlates with the results of our baseline model which was the best at classifying the lesions that had the largest proportion in the HAM10000 dataset as opposed to lesions with little representation.
+
+For week 4, we will implement a weighted sampling approach to class imbalance in order to show improvement over our baseline model. 
