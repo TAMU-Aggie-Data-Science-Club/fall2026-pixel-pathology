@@ -70,9 +70,8 @@ def train_model(num_epoch=10):
     )
         
 
-    # TODO: experiment with num_workers=2 to see if it reduces time for each epoch
-    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True)
-    validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False)
+    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True, num_workers=2)
+    validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 
     best_val_loss = float("inf")
@@ -80,10 +79,12 @@ def train_model(num_epoch=10):
         start_time = time.time()
         print(f"Starting epoch {epoch + 1}/{num_epoch}...")
 
-        # for images, labels, in training_loader:  
-        #     train_one_step(model, images.to(device), labels.to(device), optimizer) 
-
         model.train()
+        # Keep the frozen bacbone's running statistics fixed by putting BatchNorm in eval mode
+        for module in model.modules():
+            if isinstance(module, nn.BatchNorm2d):
+                module.eval()
+
         total_train_loss = 0.0
 
         for images, labels in training_loader:
