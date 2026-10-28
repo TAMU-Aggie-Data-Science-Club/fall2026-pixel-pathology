@@ -53,7 +53,7 @@ def train_model(num_epoch=10):
 
 
     training_dataset = get_augmented_dataset(
-        os.path.join(BASE_DIR, 'data/processed/train.csv'),
+        'train',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
     )
@@ -62,8 +62,8 @@ def train_model(num_epoch=10):
     weights = ResNet50_Weights.IMAGENET1K_V2
     transform = weights.transforms()    
     validation_dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        os.path.join(BASE_DIR, 'data/processed/validation.csv'),
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'val',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform

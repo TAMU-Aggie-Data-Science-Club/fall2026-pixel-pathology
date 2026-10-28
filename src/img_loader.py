@@ -6,7 +6,14 @@ from torchvision.models import ResNet50_Weights
 from PIL import Image
 import pandas as pd
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Resizes to 256 x 256 and crops to 224 x 224
+# Normalized using mean=[0.485, 0.456, 0.406] and std=[0.229, 0.224, 0.225]
+# Details found here: (https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet50.html#torchvision.models.ResNet50_Weights)
+weights = ResNet50_Weights.IMAGENET1K_V2
+transform = weights.transforms()
 
 class SkinLesionDataset(Dataset):
     def __init__(self, splits_path, split, image_dir1, image_dir2, transform=None):
@@ -36,12 +43,6 @@ class SkinLesionDataset(Dataset):
         return image, label
 
 if __name__ == "__main__":
-    # Resizes to 256 x 256 and crops to 224 x 224
-    # Normalized using mean=[0.485, 0.456, 0.406] and std=[0.229, 0.224, 0.225]
-    # Details found here: (https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet50.html#torchvision.models.ResNet50_Weights)
-    weights = ResNet50_Weights.IMAGENET1K_V2
-    transform = weights.transforms()
-
     train_dataset = SkinLesionDataset(
         os.path.join(BASE_DIR, 'data/processed/splits.csv'),
         'train',

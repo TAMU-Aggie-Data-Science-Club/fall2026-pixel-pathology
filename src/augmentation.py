@@ -16,10 +16,10 @@ augmentation = transforms.Compose([
     
 ])
 
-def get_augmented_dataset(split_path, image_dir1, image_dir2):
+def get_augmented_dataset(split, image_dir1, image_dir2):
     return SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        split_path,
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        split,
         image_dir1,
         image_dir2,
         transform=augmentation
