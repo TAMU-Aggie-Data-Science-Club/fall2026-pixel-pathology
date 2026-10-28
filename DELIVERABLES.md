@@ -57,6 +57,117 @@ PMs will ensure DATA.md records the source, downloaded version, access instructi
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
 
+## Week 4 — Complete the Pipeline and Improve the Baseline
+
+**Due Sunday, November 1, 2026, at noon Central.**
+**Progress sync: Friday, October 30, 6–7 PM Central in Project Sync.**
+
+This week combines unfinished implementation work with one focused model improvement and useful visualizations. All catch-up tasks below count toward Week 4. Do not repeat completed work.
+
+**Goal:** Make the existing data → model → app pipeline work together, compare one improvement against the baseline, and clearly show how the model performs.
+
+### Group 1: Data & Analysis
+
+#### Finish and verify the data handoff
+- Run the image audit on both HAM10000 image folders and record the results.
+- Resolve or document missing/unreadable images without changing raw files.
+- Run the combined split exporter and verification script on the real dataset.
+- Record split sizes, per-class counts, image coverage, no duplicate assignments, no lesion overlap, and reproducibility.
+- Work with Modeling to ensure its loader reads the combined split file and selects train/val/test rows correctly.
+- Bring any remaining data setup documentation into agreement with the actual code.
+
+#### Support the Week 4 improvement
+- Summarize the class imbalance using a class-count table or chart.
+- Agree with Modeling on one imbalance approach for its improvement experiment.
+- Help Modeling identify a few misclassified validation images and summarize any patterns.
+
+**Submit:** reusable scripts in src/data/ and commands, verification results, class counts, and brief observations in docs/week4/.
+
+**Talk to Modeling:** confirm the split file loads correctly and agree on imbalance handling.
+
+**Complete when:** another teammate can generate and verify the splits, and Modeling confirms it can use them.
+
+### Group 2: Modeling & Experiments
+
+#### Finish the working baseline handoff
+- Align the loader and training script with Data’s combined split file.
+- Keep the frozen backbone’s BatchNorm running statistics fixed during head-only training.
+- Document the actual training settings, imbalance handling, checkpoint selection, and checkpoint used for evaluation.
+- If these corrections change the training run, train and evaluate a corrected baseline. Preserve the earlier results and clearly label the difference.
+- Confirm the evaluated checkpoint loads through the shared prediction functions and returns seven probabilities on a real HAM10000 image.
+- Coordinate with PMs on checkpoint sharing and give App clear loading instructions.
+
+#### Run one focused improvement
+- Choose one change, such as class-weighted loss, balanced sampling, or a learning-rate adjustment.
+- Compare it with the corrected baseline using the same validation split and evaluation procedure.
+- Report validation macro F1 and a labeled confusion matrix for both runs.
+- Briefly explain which classes improved or worsened, including the classes the original baseline never predicted.
+- Include a few validation error examples, with help from Data.
+
+A higher score is not required. A reproducible comparison and an honest explanation count as completion.
+
+**Submit:** training/prediction/evaluation code in src/ and settings, commands, results, plots, and contribution notes in docs/week4/.
+
+**Talk to Data:** confirm split compatibility and imbalance handling.
+**Talk to App:** provide one agreed checkpoint, prediction interface, class order, and preprocessing.
+
+**Complete when:** the corrected baseline runs, one comparison experiment is evaluated, and App can obtain and load the agreed checkpoint.
+
+### Group 3: Explainability & App
+
+#### Finish the model-connected app
+- Build on the completed Week 2 page and merged pending-state work.
+- Connect Modeling’s checkpoint-loading and prediction functions.
+- Show the readable predicted class, its model probability, and all seven probabilities in a clear chart or table.
+- Keep known dataset labels clearly separate from model predictions.
+- Use Modeling’s shared preprocessing and class order.
+- Preserve image viewing and a clear pending message when the checkpoint is missing.
+- Keep the educational-use notice visible.
+
+#### Visualize model behavior
+- Display the agreed model’s validation confusion matrix with a short explanation of its main limitations.
+- Have another teammate test uploads, dataset samples, known labels, real predictions, and missing-checkpoint behavior.
+- Record the model/checkpoint associated with the displayed evaluation results.
+
+**Submit:** code in app/ and setup instructions, test evidence, remaining limitations, and contribution notes in docs/week4/.
+
+**Talk to Modeling:** confirm checkpoint access and the prediction interface.
+**Talk to Data:** resolve sample-image or metadata issues.
+
+**Complete when:** another teammate can launch the app, obtain a real prediction, view the performance visualization, and understand the model’s limitations.
+
+**Stretch goal:** add a Grad-CAM overlay after the required prediction flow works. Clearly explain that it highlights regions influencing a prediction, not exact lesion boundaries or proof the prediction is correct.
+
+### Shared standards
+
+- Dataset: HAM10000.
+- Keep the existing 70/15/15 lesion-grouped split with seed 42.
+- Combined split file: data/processed/splits.csv.
+- Columns: image_id, lesion_id, dx, split.
+- Split values: train, val, test.
+- Class order: akiec, bcc, bkl, df, mel, nv, vasc.
+- Use the shared class mapping from src/model.py.
+- Use ResNet50 IMAGENET1K_V2 prediction preprocessing; random augmentation is for training only.
+- Leave the test set untouched during this week’s comparison.
+- Keep raw images, generated split files, and model checkpoints out of GitHub. Commit reproducible code, instructions, and small evaluation summaries/plots.
+- Every artifact is for education and research, not diagnosis.
+
+### GitHub and team coordination
+
+- Post a short task breakdown on your team’s Week 4 issue, naming who is handling each task.
+- Use branches per task; members working together may share a branch.
+- Open task PRs into the team’s agreed integration branch.
+- Have a teammate or PM review before merging.
+- Include run instructions, evidence, and each member’s contribution.
+- PMs review the combined integration PR into main.
+- Check in midweek with completed work, remaining work, and blockers.
+
+### Scope limit
+
+Required: finish the existing pipeline, run one model improvement comparison, and show real predictions plus performance results in the app.
+
+Not required this week: multiple architectures, extensive hyperparameter searches, ROC curves, deployment, or a finished Grad-CAM implementation.
+
 ## Week 3 — Train our first baseline and connect the app
 
 **Due Sunday, October 25, 2026, at noon Central.**
@@ -455,7 +566,7 @@ This is a working plan. Timing may change based on team progress, compute access
 | 1 | Metadata exploration and class counts | Transfer-learning and evaluation plan | Demo sketch and Grad-CAM explanation |
 | 2 | Dataset audit and lesion-grouped split code | Image loader, seven-class CNN, and one training step | Streamlit image viewer and shared prediction interface |
 | 3 | Finish image audit and export verified existing splits; scope reduced to unblock training | Train one frozen-backbone baseline; validation macro F1 and confusion matrix | Finish Week 2 page and connect baseline predictions |
-| 4 | Analyze baseline errors and image artifacts | Fine-tune and compare with baseline | Implement Grad-CAM overlays |
+| 4 | Finish audit/split verification and analyze class imbalance/errors; catch-up counts toward this week | Correct the baseline pipeline and compare one focused improvement; scope reduced to finish integration | Connect real predictions and performance plots; Grad-CAM is optional while catching up |
 | 5 | Examine errors by class and available metadata | Run controlled validation experiments | Integrate predictions and heatmaps |
 | 6 | Document dataset limitations | Select model and assess calibration | Check heatmaps and test app behavior |
 | 7 | Support final evaluation and analysis | Evaluate the locked model on the held-out test set | Complete demo and reproducibility checks |
@@ -475,5 +586,6 @@ Changes to preprocessing, label order, or model interfaces must be coordinated a
 - Grad-CAM overlays with documented limitations.
 - Streamlit demonstration app labeled for educational use.
 - Setup instructions, final presentation, and project handoff.
+
 
 
