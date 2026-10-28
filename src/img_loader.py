@@ -9,11 +9,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class SkinLesionDataset(Dataset):
-    def __init__(self, manifest_path, split_path, image_dir1, image_dir2, transform=None):
-        manifest = pd.read_csv(manifest_path)
-        split = pd.read_csv(split_path)
-        split_mask = manifest['image_id'].isin(split['image_id'])
-        self.data = manifest[split_mask].reset_index(drop=True)
+    def __init__(self, splits_path, split, image_dir1, image_dir2, transform=None):
+        splits = pd.read_csv(splits_path)
+        self.data = splits[splits['split'] == split].reset_index(drop=True)
 
         self.transform = transform
 
@@ -45,22 +43,22 @@ if __name__ == "__main__":
     transform = weights.transforms()
 
     train_dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        os.path.join(BASE_DIR, 'data/processed/train.csv'),
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'train',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform
     )
     validation_dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        os.path.join(BASE_DIR, 'data/processed/validation.csv'),
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'val',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform
     )
     test_dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        os.path.join(BASE_DIR, 'data/processed/test.csv'),
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'test',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform
