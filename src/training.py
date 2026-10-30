@@ -3,7 +3,7 @@ Train on training images and use validation results to choose the checkpoint. Le
 '''
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 from torchvision.models import ResNet50_Weights
 
 from img_loader import SkinLesionDataset
@@ -15,7 +15,15 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 import time
+import numpy as np
 
+def get_sampler(dataset):
+    labels = [dataset.class_map[row['dx']] for _, row in dataset.data.iterrows()]
+    class_counts = np.bincount(labels, minlength=len(CLASS_NAMES))
+    print("Training class counts:", dict(zip(CLASS_NAMES, class_counts)))
+    class_weights = 1.0 / class_counts
+    sample_weights = torch.tensor([class_weights[l] for l in labels], dtype=torch.float)
+    return WeightedRandomSampler(weights=sample_weights , num_samples=len(sample_weights) , replacement=True)
 
 def evaluate(model, loader, device):
     model.eval()
@@ -70,7 +78,8 @@ def train_model(num_epoch=10):
     )
         
 
-    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True, num_workers=2)
+    sampler = get_sampler(training_dataset)
+    training_loader = DataLoader(training_dataset, batch_size=32, sampler=sampler, num_workers=2)
     validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 
