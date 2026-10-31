@@ -32,6 +32,21 @@ Matrix rows are true labels; columns are predicted labels.
 
 ![Validation confusion matrix](validation_confusion_matrix.png)
 
+### Older baseline model
+
+The results of the old baseline model without the frozen backbone's running statistics fixed:
+- Validation macro F1: 0.23914343827718973.
+- Validation images: 1,519.
+- Device: Apple MPS.
+- Batch size: 16; shuffle=False; drop_last=False.
+
+The old baseline predicted only bkl, mel, and nv. It correctly classified 35 of 156 melanoma images and 947 of 991 nv images. It never predicted akiec, bcc, df, or vasc.
+
+Full results: (validation_metrics_old.json).
+
+![Validation confusion matrix](validation_confusion_matrix_old.png)
+
+
 ## Usage
 
 Requires torch, torchvision, pandas, Pillow, scikit-learn, numpy,
