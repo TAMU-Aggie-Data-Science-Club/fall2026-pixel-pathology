@@ -69,7 +69,6 @@ def train_one_step(model, images, labels, optimizer):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", required=True, help="Training manifest CSV.")
     parser.add_argument("--image-dir1", required=True)
     parser.add_argument("--image-dir2", required=True)
     parser.add_argument("--batch-size", type=int, default=4)
@@ -81,7 +80,7 @@ def main():
         parser.error("--batch-size must be positive")
 
     torch.manual_seed(42)
-    dataset = get_augmented_dataset(args.manifest, args.image_dir1, args.image_dir2)
+    dataset = get_augmented_dataset('train', args.image_dir1, args.image_dir2)
     if dataset.class_map != CLASS_TO_IDX:
         raise ValueError("Loader class_map does not match the model's CLASS_TO_IDX.")
     if len(dataset) == 0:

@@ -98,6 +98,25 @@ Checked with a short training run on synthetic stand-in images (no real data was
 - `prepare_image` returned `(1, 3, 224, 224)`. A path, an already-read uploaded-file-style object, and a grayscale PIL image all produced seven probabilities summing to 1.
 - A missing checkpoint raised `FileNotFoundError`. A checkpoint with a different class order raised `ValueError`.
 
-**Still to do:** run `src/predict.py` on a real HAM10000 image with the real baseline checkpoint and record the output here.
+### Probability Prediction with Real Ham10000 Image using Baseline Checkpoint
+
+Command Used:
+- baseline checkpoint can be found under "Pixel Pathology Checkpoints" google drive folder
+
+```bash
+python3.14 predict.py --image ../data/raw/HAM10000_images_part_1/ISIC_0024306.jpg --device mps
+```
+
+Output:
+
+> {<br>
+  "akiec": 0.019347431138157845,<br>
+  "bcc": 0.04520805925130844,<br>
+  "bkl": 0.047257669270038605,<br>
+  "df": 0.010003709234297276,<br>
+  "mel": 0.037963200360536575,<br>
+  "nv": 0.8324785828590393,<br>
+  "vasc": 0.007741400506347418<br>
+}
 
 This is an educational project, not a diagnostic tool.

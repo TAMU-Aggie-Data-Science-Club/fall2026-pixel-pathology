@@ -53,7 +53,7 @@ def train_model(num_epoch=10):
 
 
     training_dataset = get_augmented_dataset(
-        os.path.join(BASE_DIR, 'data/processed/train.csv'),
+        'train',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
     )
@@ -62,17 +62,16 @@ def train_model(num_epoch=10):
     weights = ResNet50_Weights.IMAGENET1K_V2
     transform = weights.transforms()    
     validation_dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'),
-        os.path.join(BASE_DIR, 'data/processed/validation.csv'),
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'val',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform
     )
         
 
-    # TODO: experiment with num_workers=2 to see if it reduces time for each epoch
-    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True)
-    validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False)
+    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True, num_workers=2)
+    validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 
     best_val_loss = float("inf")
@@ -80,10 +79,12 @@ def train_model(num_epoch=10):
         start_time = time.time()
         print(f"Starting epoch {epoch + 1}/{num_epoch}...")
 
-        # for images, labels, in training_loader:  
-        #     train_one_step(model, images.to(device), labels.to(device), optimizer) 
-
         model.train()
+        # Keep the frozen backbone's running statistics fixed by putting BatchNorm in eval mode
+        for module in model.modules():
+            if isinstance(module, nn.BatchNorm2d):
+                module.eval()
+
         total_train_loss = 0.0
 
         for images, labels in training_loader:

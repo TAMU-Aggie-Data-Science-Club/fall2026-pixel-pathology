@@ -4,7 +4,7 @@ Contributor: Rahul Bathala — Issue #41, task 6.
 
 ## Method
 
-Evaluated Harrit's baseline_model.pt on all 1,519 validation images
+Evaluated baseline_resnet50.pt on all 1,519 validation images
 using the shared ResNet50 IMAGENET1K_V2 preprocessing, without random
 augmentation. Test images were not evaluated.
 
@@ -16,17 +16,14 @@ Class order: akiec, bcc, bkl, df, mel, nv, vasc.
 
 ## Results
 
-- Validation macro F1: 0.23914343827718973.
+- Validation macro F1: 0.1740995292976135
 - Validation images: 1,519.
 - Device: Apple MPS.
 - Batch size: 16; shuffle=False; drop_last=False.
 
-The model predicted only bkl, mel, and nv. It correctly classified
-35 of 156 melanoma images and 947 of 991 nv images. It never predicted
-akiec, bcc, df, or vasc. The cause of this uneven performance needs
-investigation in the training work.
+The model predicted only nv. It correctly classified 976 of 991 nv images. The cause of this uneven performance could be the result of the lack of training imbalance and keeping the running the training model with the frozen backbone's batchnorm fixed.
 
-Checkpoint supplied by Harrit. Training settings and checkpoint
+Checkpoint supplied through shared google drive folder, Pixel Pathology Checkpoints. Training settings and checkpoint
 selection details belong with the training documentation.
 
 Full results: [validation_metrics.json](validation_metrics.json).
@@ -49,7 +46,7 @@ The loader must use the confirmed validation split, shared prediction
 preprocessing, no sampling with replacement, and drop_last=False.
 Load the checkpoint with strict=True using the agreed class order.
 
-Obtain baseline_model.pt from Harrit. Keep checkpoints, images, and
+Obtain baseline_model.pt from *Pixel Pathology Checkpoints* google drive folder. Keep checkpoints, images, and
 generated manifests out of GitHub.
 
 ## Verification
@@ -72,3 +69,23 @@ recognition of the rarer classes.
 For Week 4, reuse this evaluator to compare the fine-tuned model
 against this baseline on the same validation split. This depends
 on the team's next trained checkpoint.
+
+## Unified split-file verification — October 28
+
+Generated data/processed/splits.csv using Data's create_splits.py
+from issue-40/integration with seed 42. Verified unique image IDs,
+no lesions shared across splits, and an exact match between all
+1,519 validation image IDs, lesion IDs, and labels and the earlier
+validation manifest.
+
+Used SkinLesionDataset with splits_path="data/processed/splits.csv"
+and split="val". A real-image batch loaded with shape (16, 3, 224, 224)
+and labels of shape (16,).
+
+Reevaluated the original baseline_model.pt using the unified loader.
+Macro F1 remained 0.23914343827718973, and the confusion matrix and
+class order matched the original saved results exactly. No weighted
+sampling or random augmentation was used for validation.
+
+This verifies the evaluation path with the unified split file.
+It does not verify the corrected training run or prediction interface.
