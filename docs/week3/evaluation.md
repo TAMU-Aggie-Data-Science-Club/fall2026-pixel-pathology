@@ -42,7 +42,7 @@ The results of the old baseline model without the frozen backbone's running stat
 
 The old baseline predicted only bkl, mel, and nv. It correctly classified 35 of 156 melanoma images and 947 of 991 nv images. It never predicted akiec, bcc, df, or vasc.
 
-Full results: (validation_metrics_old.json).
+Full results: [validation_metrics_old.json](validation_metrics_old.json).
 
 ![Validation confusion matrix](validation_confusion_matrix_old.png)
 
