@@ -28,8 +28,9 @@ The checkpoint is a dictionary:
 
 ## Obtaining the checkpoint
 
-A shared download location has not been chosen yet (**TBD — PMs to decide**). Until then, reproduce it locally.
+[Shared Google Drive Folder for Checkpoints](https://drive.google.com/drive/folders/1cHydYMl7UWaCWTJKq-wWhFXRHmJ_Jc8R?usp=sharing)
 
+The baseline model retrained with the batchnorm fix is named baseline_resnet50.pt 
 ## Reproducing the checkpoint
 
 1. Set up the local data layout from [`DELIVERABLES.md`](../../DELIVERABLES.md) (Week 3 → Shared standards) and generate the split files the training script reads.
