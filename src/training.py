@@ -80,7 +80,7 @@ def train_model(num_epoch=10):
         print(f"Starting epoch {epoch + 1}/{num_epoch}...")
 
         model.train()
-        # Keep the frozen bacbone's running statistics fixed by putting BatchNorm in eval mode
+        # Keep the frozen backbone's running statistics fixed by putting BatchNorm in eval mode
         for module in model.modules():
             if isinstance(module, nn.BatchNorm2d):
                 module.eval()
