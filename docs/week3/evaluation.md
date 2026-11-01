@@ -26,11 +26,11 @@ The model predicted only nv. It correctly classified 976 of 991 nv images. The c
 Checkpoint supplied through shared google drive folder, Pixel Pathology Checkpoints. Training settings and checkpoint
 selection details belong with the training documentation.
 
-Full results: [validation_metrics.json](validation_metrics.json).
+Full results: [baseline_metrics.json](baseline_metrics.json).
 
 Matrix rows are true labels; columns are predicted labels.
 
-![Validation confusion matrix](validation_confusion_matrix.png)
+![baseline confusion matrix](baseline_matrix.png)
 
 ### Older baseline model
 
@@ -42,9 +42,9 @@ The results of the old baseline model without the frozen backbone's running stat
 
 The old baseline predicted only bkl, mel, and nv. It correctly classified 35 of 156 melanoma images and 947 of 991 nv images. It never predicted akiec, bcc, df, or vasc.
 
-Full results: [validation_metrics_old.json](validation_metrics_old.json).
+Full results: [validation_metrics.json](validation_metrics_old.json).
 
-![Validation confusion matrix](validation_confusion_matrix_old.png)
+![Validation confusion matrix](validation_confusion_matrix.png)
 
 
 ## Usage
