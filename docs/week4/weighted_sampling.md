@@ -1,5 +1,9 @@
 # Week 4: Weighted Sampling Evaluation
 
+Contributors:
+- Eric: Issue 62 - Task 1, 2
+- Harrison: Issue 62 - Task 3, 4
+
 ## Method
 
 Evaluated weighted_sampling.pt on all 1,519 validation images
