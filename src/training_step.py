@@ -23,6 +23,12 @@ def train_one_step(model, images, labels, optimizer):
         raise ValueError("Class labels must be integers from 0 through 6.")
 
     model.train()
+    
+    # Keep the frozen bacbone's running statistics fixed by putting BatchNorm in eval mode
+    for module in model.modules():
+        if isinstance(module, nn.BatchNorm2d):
+            module.eval()
+
     optimizer.zero_grad(set_to_none=True)
     head_before = model.fc.weight.detach().clone()
 
@@ -63,7 +69,6 @@ def train_one_step(model, images, labels, optimizer):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", required=True, help="Training manifest CSV.")
     parser.add_argument("--image-dir1", required=True)
     parser.add_argument("--image-dir2", required=True)
     parser.add_argument("--batch-size", type=int, default=4)
@@ -75,7 +80,7 @@ def main():
         parser.error("--batch-size must be positive")
 
     torch.manual_seed(42)
-    dataset = get_augmented_dataset(args.manifest, args.image_dir1, args.image_dir2)
+    dataset = get_augmented_dataset('train', args.image_dir1, args.image_dir2)
     if dataset.class_map != CLASS_TO_IDX:
         raise ValueError("Loader class_map does not match the model's CLASS_TO_IDX.")
     if len(dataset) == 0:
