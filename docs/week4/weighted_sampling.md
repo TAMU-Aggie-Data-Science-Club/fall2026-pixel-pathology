@@ -18,7 +18,7 @@ Class order: akiec, bcc, bkl, df, mel, nv, vasc.
 
 ## Results
 
-After weighted sampling, the classification of nv worsened while improvements in the other six lesion classes saw improvement. 23 of the 25 vasc lesions were correctly classified, while the other lesions saw more distribution in their respective rows. This is a good imporvement compared to the classes the corrected baseline never predicted (akiec, bcc, bkl, df, mel, vasc). The F1 score also saw an imporvement of ~0.146. 
+After weighted sampling, the classification of nv worsened while the other six lesion classes saw improvement. 23 of the 25 vasc lesions were correctly classified, while the other lesions saw more distribution in their respective rows. This is a good improvement compared to the classes the corrected baseline never predicted (akiec, bcc, bkl, df, mel, vasc). The F1 score also saw an improvement of ~0.146. 
 
 ### weighted sampling
 
