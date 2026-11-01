@@ -46,3 +46,39 @@ The confusion matrix for the weighted sampling shows a slight trend towards the 
 ![Weigted sampling confusion matrix](weighted_sampling_matrix.png)
 
 ![Baseline confusion matrix](baseline_matrix.png)
+
+## Validation Error Examples
+
+Based on the weighted sampling confusion matrix, we are able to clearly identify common trends of misclassification errors the model makes. The largest sources of validation errors include:
+
+- nv being misclassified as vasc, mel, df
+
+- bkl being misclassified as vasc, bcc
+
+- bcc being misclassified as vasc
+
+Images Examples:
+
+### nv misclassified as vasc
+
+![nv_to_vasc](nv_to_vasc_ISIC_0032212.jpg)
+
+### nv misclassified as mel
+
+![nv_to_mel](nv_to_mel_ISIC_0032428.jpg)
+
+### nv misclassified as df
+
+![nv_to_df](nv_to_df_ISIC_0026555.jpg)
+
+### bkl misclassified as bcc
+
+![bkl_to_bcc](bkl_to_bcc_ISIC_0028560.jpg)
+
+### bkl misclassified as vasc
+
+![bkl_to_vasc](bkl_to_vasc_ISIC_0029176.jpg)
+
+### bcc being misclassified as vasc
+
+![bcc_to_vasc](bcc_to_vasc_ISIC_0031749.jpg)
