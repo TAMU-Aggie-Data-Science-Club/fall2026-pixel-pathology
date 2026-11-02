@@ -1,9 +1,12 @@
+from model import CLASS_TO_IDX
+
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision.models import ResNet50_Weights
 from PIL import Image
 import pandas as pd
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Resizes to 256 x 256 and crops to 224 x 224
@@ -12,24 +15,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 weights = ResNet50_Weights.IMAGENET1K_V2
 transform = weights.transforms()
 
-
 class SkinLesionDataset(Dataset):
-    def __init__(self, manifest_path, image_dir1, image_dir2, transform=None):
-        self.data = pd.read_csv(manifest_path)
+    def __init__(self, splits_path, split, image_dir1, image_dir2, transform=None):
+        splits = pd.read_csv(splits_path)
+        self.data = splits[splits['split'] == split].reset_index(drop=True)
+
         self.transform = transform
 
-        # TODO: Discuss class mapping w/ data team
-        self.class_map = {
-            'akiec': 0,
-            'bcc': 1,
-            'bkl': 2,
-            'df': 3,
-            'mel': 4,
-            'nv': 5,
-            'vasc': 6
-        }
+        self.class_map = CLASS_TO_IDX
 
-        # TODO: Discuss image paths w/ data team
         self.image_paths = {}
         for image_dir in [image_dir1, image_dir2]:
             for filename in os.listdir(image_dir):
@@ -48,14 +42,29 @@ class SkinLesionDataset(Dataset):
             image = self.transform(image)
         return image, label
 
-if __name__ == "__main__":  
-    dataset = SkinLesionDataset(
-        os.path.join(BASE_DIR, 'data/raw/HAM10000_metadata.csv'), # TODO: Discuss manifest w/ data team
+if __name__ == "__main__":
+    train_dataset = SkinLesionDataset(
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'train',
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
         os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
         transform=transform
     )
-    loader = DataLoader(dataset, batch_size=32, shuffle=True)
+    validation_dataset = SkinLesionDataset(
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'val',
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
+        transform=transform
+    )
+    test_dataset = SkinLesionDataset(
+        os.path.join(BASE_DIR, 'data/processed/splits.csv'),
+        'test',
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_1'),
+        os.path.join(BASE_DIR, 'data/raw/HAM10000_images_part_2'),
+        transform=transform
+    )
 
-    # Example output for an image
-    print(dataset[10005])
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
