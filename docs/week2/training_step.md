@@ -21,7 +21,7 @@ Run from the repository root, with the team's model.py, img_loader.py, and augme
 
 ```bash
 python src/training_step.py \
-  --manifest "/path/to/HAM10000_metadata" \
+  --manifest "/path/to/HAM10000_metadata.csv" \
   --image-dir1 "/path/to/HAM10000_images_part_1" \
   --image-dir2 "/path/to/HAM10000_images_part_2" \
   --batch-size 4 \

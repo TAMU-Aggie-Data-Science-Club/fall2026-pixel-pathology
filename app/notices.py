@@ -46,19 +46,24 @@ def placeholder(text):
 def show_pending_outputs(source=None):
     """Show the prediction and Grad-CAM steps, marked pending (no model yet)."""
     st.divider()
-    st.markdown("#### :gray[Step 2 – Prediction]")
-    st.caption("Pending — not connected to a model yet. No prediction is available.")
+    st.markdown("#### :gray[Step 2 – Model prediction]")
+    st.info(
+        "Prediction pending — the baseline checkpoint and prediction interface "
+        "have not been connected yet. No model prediction or probabilities "
+        "are available. You can still upload or select and view an image."
+    )
+    st.caption("Known dataset labels above come from metadata, not from the model.")
     st.markdown("##### :gray[Top prediction: —]")
     for code, name in CLASS_NAMES.items():
         c1, c2, c3, c4 = st.columns([1, 3, 6, 1])
         c1.markdown(f'<span style="font-family:monospace;color:gray">{code}</span>', unsafe_allow_html=True)
         c2.markdown(f":gray[{name}]")
-        c3.progress(0)
+        c3.markdown(":gray[Pending]")
         c4.markdown(":gray[—]")
 
     st.divider()
     st.markdown("#### :gray[Step 3 – Heatmap]")
-    st.caption("Pending — Grad-CAM is not implemented yet. No overlay is available.")
+    st.caption("Pending — Grad-CAM heatmaps are planned for Week 4. No overlay is available.")
     left, right = st.columns(2)
     with left:
         if source is None or not show_image(source):
