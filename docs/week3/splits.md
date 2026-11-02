@@ -4,7 +4,7 @@ Requires Python, scikit, and pandas. For safety, recommended to try upgrading pi
 
 ```
 python -m pip install --upgrade pip
-pip -m pip install scikit-learn pandas
+python -m pip install scikit-learn pandas
 ```
 
 Then run create_splits.py on the raw data. This can be done anywhere in the project folder, but from the upper-most level within fall2026-pixel-pathology:
