@@ -57,6 +57,56 @@ PMs will ensure DATA.md records the source, downloaded version, access instructi
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
 
+## Week 5: Working Demo and Model Evaluation
+
+**Due: Sunday, November 8 at noon Central.**
+
+**Goal:** Select one skin lesion image in the app, see a real prediction, and view a Grad-CAM heatmap. Start with the baseline checkpoint. Switch only if Modeling recommends a different checkpoint and App confirms it works.
+
+Week 4 carryover counts toward Week 5. Finish it first. If an item is already done, link the original issue or PR instead of redoing it.
+
+### Data & Analysis
+
+**Finish first**
+
+- Open a PR from issue-61/integration to main with the split generation and verification instructions.
+- Confirm the dataset audit is complete. Finish any missing checks and post the results in the original issue.
+
+**New this week**
+
+- Use the existing validation results to identify two common misclassifications. Include validation image counts for the classes involved and flag conclusions based on very few examples.
+- Submit a short writeup with the two error patterns and one recommendation for Modeling. Share the confusion matrix and its model name with App.
+
+### Modeling & Experiments
+
+**Finish first**
+
+- Remove raw lesion JPGs from PR #68, resolve conflicts with main, and request review. Keep aggregate plots and metrics.
+
+**New this week**
+
+- Compare the baseline and weighted sampling runs on the same validation split using macro F1 and per-class recall. Reuse existing runs if comparable.
+- Recommend a demo checkpoint and explain the tradeoff. Share its location, loading instructions, and Grad-CAM setup details with App. No new architecture or large tuning run is required.
+
+### Explainability & Application
+
+**Finish first**
+
+- Have a teammate who didn't write PR #73 run the real prediction flow on their own setup and post the result. Fix demo blockers and mark the draft ready for review.
+- Display one existing confusion matrix in the app and label its model and data split.
+
+**New this week**
+
+- Add a Grad-CAM overlay for one sample image using the baseline checkpoint. Show the original image, predicted class, and heatmap. Keep the educational notice visible and explain that the highlighted regions influenced the prediction and don't establish a lesion boundary or diagnosis.
+- Submit a PR with setup instructions and a teammate's confirmation that they reproduced the demo. Grad-CAM for every upload can come later.
+
+### How to submit
+
+- Post a checklist with a name next to each task. Teammates can share a task and branch.
+- Keep carryover in the original issue or PR and link it from the Week 5 issue. Target your team's integration branch for new task PRs.
+- Commit code, docs, and aggregate results. Keep raw images and checkpoints out of GitHub.
+- Flag cross-team blockers by Friday's sync.
+
 ## Week 4 — Complete the Pipeline and Improve the Baseline
 
 **Due Sunday, November 1, 2026, at noon Central.**
