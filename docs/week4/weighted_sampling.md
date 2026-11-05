@@ -56,3 +56,14 @@ Based on the weighted sampling confusion matrix, we are able to clearly identify
 - bkl being misclassified as vasc, bcc
 
 - bcc being misclassified as vasc
+
+## commands
+
+Training command to get weighted_sampling checkpoint (from root):
+
+```bash
+python src/training.py --name [name of checkpoint].py --weighted_sampling True
+```
+
+Evaluation command:
+''''''

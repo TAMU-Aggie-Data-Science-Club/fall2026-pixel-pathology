@@ -43,7 +43,7 @@ def evaluate(model, loader, device):
 
     return total_loss / len(loader)
 
-def train_model(name, num_epoch=10):
+def train_model(name, num_epoch=10, weighted_sampling=False):
     CHECKPOINT_PATH = os.path.join(BASE_DIR, "models", name)
     if torch.backends.mps.is_available():
         device = torch.device("mps")
@@ -77,9 +77,11 @@ def train_model(name, num_epoch=10):
         transform=transform
     )
         
-
-    sampler = get_sampler(training_dataset)
-    training_loader = DataLoader(training_dataset, batch_size=32, sampler=sampler, num_workers=2)
+    if weighted_sampling:
+        sampler = get_sampler(training_dataset)
+        training_loader = DataLoader(training_dataset, batch_size=32, sampler=sampler, num_workers=2)
+    else:
+        training_loader = DataLoader(training_dataset, batch_size=32, num_workers=2)
     validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 
@@ -135,8 +137,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", required=True, help="provide name of checkpoint: e.g. checkpoint.pt")
     parser.add_argument("--num_epochs", type=int, default=10)
+    parser.add_argument("--weighted_sampling", type=bool, default=False, help="True or False")
     args = parser.parse_args()
-    train_model(args.name, args.num_epochs)
+    train_model(args.name, args.num_epochs, args.weighted_sampling)
 
 if __name__ == "__main__":
     main()
