@@ -134,7 +134,7 @@ def train_model(name, num_epoch=10):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", required=True, help="provide name of checkpoint: e.g. checkpoint.pt")
-    parser.add_argument("--num_epochs", default=10)
+    parser.add_argument("--num_epochs", type=int, default=10)
     args = parser.parse_args()
     train_model(args.name, args.num_epochs)
 
