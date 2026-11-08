@@ -137,7 +137,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", required=True, help="provide name of checkpoint: e.g. checkpoint.pt")
     parser.add_argument("--num_epochs", type=int, default=10)
-    parser.add_argument("--weighted_sampling", type=bool, default=False, help="True or False")
+    parser.add_argument(
+        "--weighted_sampling",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="omit flag to disable weighted_sampling"
+    )    
     args = parser.parse_args()
     train_model(args.name, args.num_epochs, args.weighted_sampling)
 

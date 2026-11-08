@@ -79,7 +79,7 @@ From the repository root, set up the HAM10000 image folders and
 `data/processed/splits.csv`. To train a weighted checkpoint:
 
 ```bash
-python src/training.py --name weighted_sampling_reproduction.pt --num_epochs 10 --weighted_sampling True
+python src/training.py --name weighted_sampling_reproduction.pt --num_epochs 10 --weighted_sampling
 ```
 
 To evaluate the exact saved checkpoints used in this report, place them
