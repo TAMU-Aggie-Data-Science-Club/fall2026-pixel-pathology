@@ -10,6 +10,10 @@ data/*
 # Scratch planning files (see AGENTS.md) — never part of a PR.
 .planning/
 
+# --- Model checkpoints ----------------------------------------------------
+# Trained weights are large and reproducible; keep them local (see docs/week3/).
+models/
+
 # --- Common noise ----------------------------------------------------------
 # OS / editor cruft
 .DS_Store

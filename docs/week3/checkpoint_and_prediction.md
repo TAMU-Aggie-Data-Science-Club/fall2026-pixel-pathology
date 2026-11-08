@@ -43,7 +43,7 @@ The baseline model retrained with the batchnorm fix is named baseline_resnet50.p
 3. From the repository root, run:
 
    ```bash
-   python src/training.py --name [name of checkpoint].pt
+   python src/training.py
    ```
 
    This trains the head for 10 epochs and writes `models/baseline_resnet50.pt`.
