@@ -21,7 +21,7 @@ Class order: akiec, bcc, bkl, df, mel, nv, vasc.
 - Device: Apple MPS.
 - Batch size: 16; shuffle=False; drop_last=False.
 
-The model predicted only nv. It correctly classified 976 of 991 nv images. The cause of this uneven performance could be the result of the lack of training imbalance and keeping the running the training model with the frozen backbone's batchnorm fixed.
+The model predicted nv well. It correctly classified 976 of 991 nv images. It predicted bcc, bkl, and mel a few times and never predicted akiec, df, or vasc. The cause of this uneven performance could be the result of the lack of training imbalance and keeping the running the training model with the frozen backbone's batchnorm fixed.
 
 Checkpoint supplied through shared google drive folder, Pixel Pathology Checkpoints. Training settings and checkpoint
 selection details belong with the training documentation.

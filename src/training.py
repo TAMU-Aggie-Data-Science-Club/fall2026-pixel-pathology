@@ -3,19 +3,27 @@ Train on training images and use validation results to choose the checkpoint. Le
 '''
 import torch
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 from torchvision.models import ResNet50_Weights
 
 from img_loader import SkinLesionDataset
 from augmentation import get_augmented_dataset
 from model import CHECKPOINT_PATH, CLASS_NAMES, build_model
-from training_step import train_one_step
 
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-import time
+import numpy as np
 
+import argparse
+
+def get_sampler(dataset):
+    labels = [dataset.class_map[row['dx']] for _, row in dataset.data.iterrows()]
+    class_counts = np.bincount(labels, minlength=len(CLASS_NAMES))
+    print("Training class counts:", dict(zip(CLASS_NAMES, class_counts)))
+    class_weights = 1.0 / class_counts
+    sample_weights = torch.tensor([class_weights[l] for l in labels], dtype=torch.float)
+    return WeightedRandomSampler(weights=sample_weights , num_samples=len(sample_weights) , replacement=True)
 
 def evaluate(model, loader, device):
     model.eval()
@@ -35,8 +43,8 @@ def evaluate(model, loader, device):
 
     return total_loss / len(loader)
 
-def train_model(num_epoch=10):
-
+def train_model(name, num_epoch=10, weighted_sampling=False):
+    CHECKPOINT_PATH = os.path.join(BASE_DIR, "models", name)
     if torch.backends.mps.is_available():
         device = torch.device("mps")
     elif torch.cuda.is_available():
@@ -69,14 +77,16 @@ def train_model(num_epoch=10):
         transform=transform
     )
         
-
-    training_loader = DataLoader(training_dataset, batch_size=32, shuffle=True, num_workers=2)
+    if weighted_sampling:
+        sampler = get_sampler(training_dataset)
+        training_loader = DataLoader(training_dataset, batch_size=32, sampler=sampler, num_workers=2)
+    else:
+        training_loader = DataLoader(training_dataset, batch_size=32, num_workers=2)
     validation_loader = DataLoader(validation_dataset, batch_size=32, shuffle=False, num_workers=0)
 
 
     best_val_loss = float("inf")
     for epoch in range(num_epoch):
-        start_time = time.time()
         print(f"Starting epoch {epoch + 1}/{num_epoch}...")
 
         model.train()
@@ -123,6 +133,18 @@ def train_model(num_epoch=10):
                 "val_loss": val_loss,
             }, CHECKPOINT_PATH)
 
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--name", required=True, help="provide name of checkpoint: e.g. checkpoint.pt")
+    parser.add_argument("--num_epochs", type=int, default=10)
+    parser.add_argument(
+        "--weighted_sampling",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="omit flag to disable weighted_sampling"
+    )    
+    args = parser.parse_args()
+    train_model(args.name, args.num_epochs, args.weighted_sampling)
 
 if __name__ == "__main__":
-    train_model()
+    main()
