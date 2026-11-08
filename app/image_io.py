@@ -10,6 +10,8 @@ def show_image(source, caption=None):
     shows a friendly error and returns False, so the app keeps running.
     """
     try:
+        if hasattr(source, "seek"):
+            source.seek(0)
         img = Image.open(source)
         img.load()  # forces a full read, so corrupt files fail here
         img = img.convert("RGB")
