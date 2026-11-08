@@ -47,7 +47,7 @@ def show_pending_outputs(source=None):
     """Keep original-image viewing and the pending Grad-CAM section visible."""
     st.divider()
     st.markdown("#### :gray[Step 3 – Heatmap]")
-    st.caption("Pending — Grad-CAM heatmaps are planned for Week 4. No overlay is available.")
+    st.caption("Pending — a Grad-CAM overlay needs a selected image and the baseline checkpoint. No overlay is available.")
     left, right = st.columns(2)
     with left:
         if source is None or not show_image(source):
