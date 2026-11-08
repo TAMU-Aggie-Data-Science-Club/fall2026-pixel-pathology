@@ -3,6 +3,7 @@
 Contributors:
 - Eric: Issue 62 - Task 1, 2
 - Harrison: Issue 62 - Task 3, 4
+- Rahul: Issue 62 - Task 3
 
 ## Method
 
