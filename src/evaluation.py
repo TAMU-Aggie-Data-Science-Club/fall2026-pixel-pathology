@@ -68,6 +68,10 @@ def evaluate_validation(model, validation_loader, device):
         "num_images": len(true_labels),
         "class_names": list(CLASS_NAMES),
         "confusion_matrix": matrix.tolist(),
+        "per_class_recall": {
+            name: float(matrix[i, i] / support) if support else 0.0
+            for i, (name, support) in enumerate(zip(CLASS_NAMES, matrix.sum(axis=1)))
+        },
     }
 
 
@@ -92,3 +96,38 @@ def save_validation_results(results, output_dir):
     figure.tight_layout()
     figure.savefig(output_dir / "validation_confusion_matrix.png", dpi=160)
     plt.close(figure)
+
+
+def main():
+    import argparse
+
+    from torch.utils.data import DataLoader
+
+    from img_loader import SkinLesionDataset, transform
+    from predict import load_model
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--splits", default="data/processed/splits.csv")
+    parser.add_argument("--image-dir1", default="data/raw/HAM10000_images_part_1")
+    parser.add_argument("--image-dir2", default="data/raw/HAM10000_images_part_2")
+    parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu")
+    args = parser.parse_args()
+    if args.batch_size < 1:
+        parser.error("--batch-size must be positive")
+
+    model = load_model(args.checkpoint, args.device)
+    dataset = SkinLesionDataset(
+        args.splits, "val", args.image_dir1, args.image_dir2, transform=transform
+    )
+    loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
+    results = evaluate_validation(model, loader, args.device)
+    results["checkpoint"] = args.checkpoint.name
+    save_validation_results(results, args.output_dir)
+    print(json.dumps(results, indent=2))
+
+
+if __name__ == "__main__":
+    main()
