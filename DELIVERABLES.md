@@ -57,6 +57,73 @@ PMs will ensure DATA.md records the source, downloaded version, access instructi
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
 
+## Week 6: Final Experiments and Repo Polish
+
+**Due: Sunday, November 15 at noon Central**, before the in-person Project Design Review (2–5 PM).
+**Progress sync: Friday, November 13, 6–7 PM Central in Project Sync.** It's the last check before Sunday, so come ready to say what's done, what's left, and who's finishing it.
+
+**Goal:** Lock the model we'll present, get the full demo onto `main`, and make the repo clear to someone seeing it for the first time. Anyone opening the repo should be able to tell what we built, how well it works, and how to run it.
+
+Week 5 carryover counts toward Week 6. Finish it first.
+
+### Data & Analysis
+
+**Finish first**
+
+- Push the validation error-pattern writeup and class counts, then open a PR into `main`.
+- Get the Week 2 audit onto `main`. Melanie's `docs/week2/README.md` (branch `issue-21/documentation`) and `notebooks/Week2_data_analysis.ipynb` (branch `issue-40/integration`) already hold the image audit results: 10,015 images found and 10,015 passing, with none missing or corrupt. Open one PR into `main` with both files. Update the README so its Colab paths, "pending" notes and "remaining items" match what's in `src/data/` now. Then link the PR on #76 as the audit confirmation.
+
+**New this week**
+
+- Fix `DATA.md` so it matches the code. It says `data/raw/HAM10000/...`, but the code and app read `data/raw/HAM10000_metadata.csv` and `data/raw/HAM10000_images_part_*/`.
+- Write a short dataset limitations section: class imbalance, lesion IDs rather than patient IDs, and who and what the images represent.
+- Write the **Data** section of the new README: dataset, split method, and how to generate and verify splits.
+
+### Modeling & Experiments
+
+**Final experiment (optional, one only)**
+
+- If you want to try one last improvement, such as fine-tuning `layer4` with weighted sampling, run it on the same validation split and compare macro F1 and per-class recall. Skip it if time is short.
+
+**New this week**
+
+- Pick the final model: `weighted_sampling.pt` or your final experiment. Explain why in one paragraph. Keep the test set untouched until Week 7.
+- Write a short model card in `docs/`: architecture, training settings, imbalance handling, validation results, known weaknesses (for example, df and akiec), and where to get the checkpoint.
+- Add every dependency to `requirements.txt`. torch, torchvision, numpy and scikit-learn are missing.
+- Write the **Model and results** section of the new README: final macro F1, per-class recall, and the confusion matrix image.
+
+### Explainability & App
+
+**Finish first**
+
+- Abhinav: merge `issue-63/integration` into `issue-78/confusion-matrix`, fix the `app/app.py` conflict, and open a PR into `issue-63/integration`.
+
+**New this week**
+
+- Switch the app to Modeling's final checkpoint and show the matching confusion matrix. Right now the app uses the baseline.
+- Fix the setup problems from the Grad-CAM test on #80. Then test the missing-checkpoint and non-image upload cases.
+- Add two or three Grad-CAM example screenshots to the docs, with a note on what the heatmaps do and don't show.
+- Write the **Running the demo** section of the new README: setup, where to put the checkpoint and images, and how to launch.
+- Open the integration PR from `issue-63/integration` into `main`.
+
+### Repo polish (everyone)
+
+- Every finished branch is merged. If you still have work on a branch, open a PR this week or tell us to delete it.
+- Every PR states its related issue, what changed, and how it was checked.
+- PMs will rewrite the README using each team's section, close finished issues, and delete merged branches.
+
+### Project Design Review: Sunday, Nov 15, 2–5 PM (in person)
+
+- We need **3–4 members** to attend. Reply in #general by **Thursday** if you can come. There's pizza.
+- PMs will make the 1–2 slides from this week's work, so the demo needs to be on `main` by noon.
+
+### How to submit
+
+- Put your name next to every task on your team's Week 6 issue.
+- Open task PRs into your team's integration branch. PMs merge integration PRs into `main`.
+- Keep raw images and checkpoints out of GitHub.
+- Raise blockers at Friday's sync at the latest, and earlier if you can. Don't wait until Sunday.
+
 ## Week 5: Working Demo and Model Evaluation
 
 **Due: Sunday, November 8 at noon Central.**
