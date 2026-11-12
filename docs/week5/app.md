@@ -12,6 +12,10 @@ python -m pip install -r requirements.txt
 python -m streamlit run app/app.py
 ```
 
+For the integrated prediction and Grad-CAM flow, also follow the existing
+[model dependency and checkpoint setup](../week4/app.md#setup-and-launch) and
+[Grad-CAM instructions](gradcam.md).
+
 The **Model performance — Confusion matrix** section appears below the existing
 demo sections. It is available without an upload, local dataset or checkpoint.
 
@@ -27,7 +31,8 @@ demo sections. It is available without an upload, local dataset or checkpoint.
 This is an existing validation evaluation, not an evaluation of the uploaded
 image or a guarantee about whichever checkpoint is loaded elsewhere in the app.
 It is not test-set or clinical performance. No evaluation was rerun, no data or
-checkpoint was added, and no prediction or Grad-CAM code was changed.
+checkpoint was added. The merged prediction and Grad-CAM implementations are
+preserved, with the confusion matrix displayed after those demo sections.
 
 ## Verification
 
@@ -36,3 +41,10 @@ name, validation split, 1,519-image count, axis explanation and educational
 notice appear with no image selected. The display also passed from a different
 working directory. The image count matches the sum of the saved matrix counts.
 Python syntax parsing and `git diff --check` passed.
+
+On November 11, 2026, merged `issue-63/integration` after #73 and #80 and resolved
+`app/app.py` to retain real predictions, Grad-CAM and the labeled matrix. All
+15 existing prediction/Grad-CAM tests passed, and the matrix page check passed
+again, including from a different working directory. These automated checks do
+not replace Hiren's independent Grad-CAM test reported by the PM. Week 6 torch
+and data-folder tasks in #84 are outside this change.
