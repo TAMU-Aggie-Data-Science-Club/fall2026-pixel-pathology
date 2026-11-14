@@ -6,17 +6,17 @@ We are using **HAM10000** for our first version: a seven-class skin-lesion class
 
 This is an educational project, not a diagnostic tool.
 
-| Field | Details |
-|---|---|
-| Dataset | HAM10000 |
-| Official source | Harvard Dataverse |
-| Dataset link | https://doi.org/10.7910/DVN/DBW86T |
-| Project snapshot | Version 4.0, downloaded October 9, 2026 |
-| Images | 10,015 dermoscopic images |
-| Labels | Seven diagnostic categories |
-| Access | Download the metadata and image archives from the source page |
-| Terms | Read the dataset's Terms tab and record the exact license before publishing dataset images or redistributing data |
-| Storage | Local files under `data/`; never commit raw images, archives, or source metadata |
+| Field            | Details                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Dataset          | HAM10000                                                                                                          |
+| Official source  | Harvard Dataverse                                                                                                 |
+| Dataset link     | https://doi.org/10.7910/DVN/DBW86T                                                                                |
+| Project snapshot | Version 4.0, downloaded October 9, 2026                                                                           |
+| Images           | 10,015 dermoscopic images                                                                                         |
+| Labels           | Seven diagnostic categories                                                                                       |
+| Access           | Download the metadata and image archives from the source page                                                     |
+| Terms            | Read the dataset's Terms tab and record the exact license before publishing dataset images or redistributing data |
+| Storage          | Local files under `data/`; never commit raw images, archives, or source metadata                                  |
 
 We are starting with this dataset only. Additional datasets require discussion with the PMs.
 
@@ -29,7 +29,7 @@ We are starting with this dataset only. Additional datasets require discussion w
 3. Download the **original comma-separated CSV** version.
 4. Save it locally as:
 
-   `data/raw/HAM10000/HAM10000_metadata.csv`
+   `data/raw/HAM10000_metadata.csv`
 
 If your download has no file extension, rename it to include `.csv`. Do not download the tab-separated version for this assignment.
 
@@ -45,25 +45,25 @@ Keep the original JPG filenames. Our data loader will search both image folders.
 Use this local layout:
 
 ```text
-data/raw/HAM10000/HAM10000_metadata.csv
-data/raw/HAM10000/HAM10000_images_part_1/
-data/raw/HAM10000/HAM10000_images_part_2/
+data/raw/HAM10000_metadata.csv
+data/raw/HAM10000_images_part_1/
+data/raw/HAM10000_images_part_2/
 ```
 
 The image archives are not needed for the Week 1 metadata assignment.
 
 ## Metadata columns
 
-| Column | Meaning |
-|---|---|
-| `image_id` | Image identifier; matches a JPG filename without `.jpg` |
-| `lesion_id` | Lesion identifier; multiple images can show the same lesion |
-| `dx` | Diagnostic category used as the classification label |
-| `dx_type` | Method used to establish the diagnosis |
-| `age` | Recorded age; some entries are missing |
-| `sex` | Recorded sex; some entries are marked unknown |
-| `localization` | Body location of the lesion |
-| `dataset` | Source collection identifier in our downloaded metadata |
+| Column         | Meaning                                                     |
+| -------------- | ----------------------------------------------------------- |
+| `image_id`     | Image identifier; matches a JPG filename without `.jpg`     |
+| `lesion_id`    | Lesion identifier; multiple images can show the same lesion |
+| `dx`           | Diagnostic category used as the classification label        |
+| `dx_type`      | Method used to establish the diagnosis                      |
+| `age`          | Recorded age; some entries are missing                      |
+| `sex`          | Recorded sex; some entries are marked unknown               |
+| `localization` | Body location of the lesion                                 |
+| `dataset`      | Source collection identifier in our downloaded metadata     |
 
 For the initial model, the input will be an image and the target will be `dx`. We are not initially using demographic columns as model inputs.
 
@@ -71,16 +71,16 @@ For the initial model, the input will be an image and the target will be `dx`. W
 
 The downloaded metadata contains:
 
-| Label | Category | Image count |
-|---|---|---:|
-| `nv` | Melanocytic nevi | 6,705 |
-| `mel` | Melanoma | 1,113 |
-| `bkl` | Benign keratosis-like lesions | 1,099 |
-| `bcc` | Basal cell carcinoma | 514 |
-| `akiec` | Actinic keratoses and intraepithelial carcinoma | 327 |
-| `vasc` | Vascular lesions | 142 |
-| `df` | Dermatofibroma | 115 |
-| **Total** | | **10,015** |
+| Label     | Category                                        | Image count |
+| --------- | ----------------------------------------------- | ----------: |
+| `nv`      | Melanocytic nevi                                |       6,705 |
+| `mel`     | Melanoma                                        |       1,113 |
+| `bkl`     | Benign keratosis-like lesions                   |       1,099 |
+| `bcc`     | Basal cell carcinoma                            |         514 |
+| `akiec`   | Actinic keratoses and intraepithelial carcinoma |         327 |
+| `vasc`    | Vascular lesions                                |         142 |
+| `df`      | Dermatofibroma                                  |         115 |
+| **Total** |                                                 |  **10,015** |
 
 These are diagnostic categories, not seven types of cancer.
 
