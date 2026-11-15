@@ -44,6 +44,37 @@ Build:
 
 See [`DELIVERABLES.md`](DELIVERABLES.md) for the suggested deliverable breakdown and rough timeline.
 
+## Model and results
+
+We use a **ResNet-50** pretrained on ImageNet (`IMAGENET1K_V2`). The backbone is frozen, and we train only a new seven-class output layer. HAM10000 is dominated by `nv` (about 67% of training images), so training uses **weighted sampling** to show the model each class about equally often. The final checkpoint is `weighted_sampling.pt`.
+
+Results below are on the **validation split** (1,519 images). The test set stays untouched until final evaluation.
+
+| | Macro F1 | Balanced accuracy |
+|---|---:|---:|
+| **Final model (weighted sampling)** | **0.320** | **47.5%** |
+| Baseline (no imbalance handling) | 0.174 | 17.7% |
+
+Per-class recall (the share of each class's images the model gets right):
+
+| Class | Images | Final model | Baseline |
+|---|---:|---:|---:|
+| akiec: actinic keratoses / intraepithelial carcinoma | 57 | 45.6% | 0.0% |
+| bcc: basal cell carcinoma | 65 | 50.8% | 3.1% |
+| bkl: benign keratosis-like lesions | 206 | 23.3% | 14.1% |
+| df: dermatofibroma | 19 | 31.6% | 0.0% |
+| mel: melanoma | 156 | 35.3% | 8.3% |
+| nv: melanocytic nevi | 991 | 53.8% | 98.5% |
+| vasc: vascular lesions | 25 | 92.0% | 0.0% |
+
+The baseline predicted almost everything as `nv`. Weighted sampling made the model recognize all seven classes but cost `nv` accuracy. The model now over-predicts the rare classes: most `df` and `vasc` predictions are wrong.
+
+![Validation confusion matrix for the final model](docs/week4/weighted_sampling_matrix.png)
+
+*Rows are true labels and columns are predicted labels.*
+
+Full details, known weaknesses, and how to get the checkpoint: [`docs/model_card.md`](docs/model_card.md).
+
 ## Repository map
 
 | File / folder | Purpose |
