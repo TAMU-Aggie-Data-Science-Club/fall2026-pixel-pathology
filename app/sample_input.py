@@ -9,6 +9,7 @@ RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 def find_samples():
     """Return {image_id: path} for every local HAM10000 image."""
     paths = sorted(RAW_DIR.glob("HAM10000_images_part_*/*.jpg"))
+    paths += sorted(RAW_DIR.glob("HAM10000/HAM10000_images_part_*/*.jpg"))
     return {p.stem: str(p) for p in paths}
 
 
@@ -29,7 +30,7 @@ def choose_image():
 
     samples = find_samples()
     if not samples:
-        st.info("No HAM10000 images found. Unzip them into data/raw/HAM10000_images_part_1/ and _part_2/.")
+        st.info("No HAM10000 images found. Unzip them into data/raw/HAM10000_images_part_1/ and _part_2/ (or the same folders inside data/raw/HAM10000/).")
         return None, None
 
     image_id = st.selectbox("Sample", list(samples))
