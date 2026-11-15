@@ -6,9 +6,21 @@ import streamlit as st
 
 from notices import CLASS_NAMES
 
-METADATA_PATH = Path(os.environ.get("HAM10000_METADATA_PATH", "data/raw/HAM10000_metadata.csv")).expanduser()
-if not METADATA_PATH.is_absolute():
-    METADATA_PATH = Path(__file__).resolve().parent.parent / METADATA_PATH
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _metadata_path():
+    configured = os.environ.get("HAM10000_METADATA_PATH")
+    if configured:
+        path = Path(configured).expanduser()
+        return path if path.is_absolute() else PROJECT_ROOT / path
+    for candidate in ("data/raw/HAM10000_metadata.csv", "data/raw/HAM10000/HAM10000_metadata.csv"):
+        if (PROJECT_ROOT / candidate).is_file():
+            return PROJECT_ROOT / candidate
+    return PROJECT_ROOT / "data/raw/HAM10000_metadata.csv"
+
+
+METADATA_PATH = _metadata_path()
 
 
 @st.cache_data

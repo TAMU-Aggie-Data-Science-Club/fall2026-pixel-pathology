@@ -1,0 +1,53 @@
+name: Block CODEOWNERS
+
+# CODEOWNERS is banned org-wide: GitHub reads it from each pull request's BASE branch,
+# which is how officers kept getting auto-requested long after the file was removed from
+# `main` (see docs/repository-standards.md). This workflow self-heals it off of every
+# ordinary branch (which carries no push protection) and raises a visible failure on `main`
+# or in a pull request where it can't just delete and push the fix.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove banned CODEOWNERS
+        run: |
+          paths="CODEOWNERS .github/CODEOWNERS docs/CODEOWNERS"
+          found=""
+          for p in $paths; do
+            [ -f "$p" ] && found="$found $p"
+          done
+
+          if [ -z "$found" ]; then
+            echo "No CODEOWNERS present. OK."
+            exit 0
+          fi
+
+          echo "::warning::CODEOWNERS is banned in this org — review requests come from the org webhook, not code owners (see docs/repository-standards.md). Found:$found"
+
+          if [ "${{ github.event_name }}" = "push" ]; then
+            git rm -f $found
+            git -c user.name="adsc-bot" -c user.email="adsc-bot@users.noreply.github.com" \
+              commit -m "chore: auto-remove banned CODEOWNERS"
+            if git push origin "HEAD:${GITHUB_REF#refs/heads/}"; then
+              echo "Removed CODEOWNERS and pushed the fix automatically."
+              exit 0
+            else
+              echo "::error::Found CODEOWNERS but could not push the automatic fix (branch is likely protected). Remove it by hand: git rm$found && git commit && git push."
+              exit 1
+            fi
+          else
+            echo "::error::This pull request's base branch still carries CODEOWNERS. Remove it before merging: git rm$found && git commit && git push."
+            exit 1
+          fi
