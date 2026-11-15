@@ -9,6 +9,8 @@ import streamlit as st
 # Modeling's modules import each other by bare name (see its handoff docs).
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+DEMO_CHECKPOINT_PATH = Path(__file__).resolve().parent.parent / "models" / "weighted_sampling.pt"
+
 
 @st.cache_resource
 def load_cached_model(checkpoint_path, modified_ns, size):
@@ -22,22 +24,23 @@ def show_prediction(source, readable_names):
     """Display real probabilities, or a pending message without stopping the page."""
     st.divider()
     st.markdown("#### Step 2 – Model prediction")
+    st.caption("Model: ResNet-50 with weighted sampling — weighted_sampling.pt")
     st.caption("Known dataset labels above come from metadata, not from the model.")
     if source is None:
         st.info("Prediction pending — upload or select an image to begin.")
         return
 
     try:
-        from model import CHECKPOINT_PATH, CLASS_NAMES
+        from model import CLASS_NAMES
         from predict import predict_probabilities
 
-        checkpoint = Path(CHECKPOINT_PATH)
+        checkpoint = DEMO_CHECKPOINT_PATH
         identity = checkpoint.stat()
         model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
     except FileNotFoundError:
         st.info(
-            "Prediction pending — the baseline checkpoint is missing. "
-            "Follow docs/week3/checkpoint_and_prediction.md to obtain it. "
+            "Prediction pending — the weighted-sampling checkpoint is missing. "
+            "Put Modeling's weighted_sampling.pt in models/; see docs/week6/app.md. "
             "You can still view your image."
         )
         return
