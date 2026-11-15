@@ -1,3 +1,5 @@
 streamlit
 pillow
 pandas
+torch
+torchvision
