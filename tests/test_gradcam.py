@@ -83,9 +83,10 @@ class GradCamPageTests(unittest.TestCase):
         folder = Path(temp.name)
         image = folder / "sample.jpg"
         Image.fromarray((np.random.rand(64, 64, 3) * 255).astype("uint8")).save(image)
-        checkpoint = folder / "baseline.pt"
+        checkpoint = folder / "weighted_sampling.pt"
+        self.checkpoint = checkpoint
         checkpoint.write_bytes(b"placeholder")
-        self.patch("model.CHECKPOINT_PATH", str(checkpoint))
+        self.patch("prediction.DEMO_CHECKPOINT_PATH", checkpoint)
         self.load = self.patch("predict.load_model", return_value=make_model())
         self.patch("predict.predict_probabilities", return_value=[1 / 7] * 7)
         self.patch("sample_input.find_samples", return_value={"sample": str(image)})
@@ -114,6 +115,7 @@ class GradCamPageTests(unittest.TestCase):
         self.assertIn("Heatmap for the predicted class:", text)
         captions = self.image_captions(app)
         self.assertIn("Grad-CAM overlay", captions)
+        self.load.assert_called_once_with(str(self.checkpoint), device="cpu")
         self.assertTrue(any("do not mark exact lesion boundaries" in c.value for c in app.caption))
 
     def test_failure_falls_back_to_pending_without_overlay(self):

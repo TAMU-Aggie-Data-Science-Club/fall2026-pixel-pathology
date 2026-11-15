@@ -1,6 +1,4 @@
-"""Grad-CAM overlay for the baseline model, written with plain PyTorch."""
-
-from pathlib import Path
+"""Grad-CAM overlay for the demo model, written with plain PyTorch."""
 
 import numpy as np
 import streamlit as st
@@ -53,10 +51,11 @@ def show_gradcam(source, readable_names):
 
     try:
         from img_loader import transform
-        from model import CHECKPOINT_PATH, CLASS_NAMES
+        from model import CLASS_NAMES
         from predict import prepare_image
+        from prediction import DEMO_CHECKPOINT_PATH
 
-        checkpoint = Path(CHECKPOINT_PATH)
+        checkpoint = DEMO_CHECKPOINT_PATH
         identity = checkpoint.stat()
         model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
 

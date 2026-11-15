@@ -27,9 +27,9 @@ class PredictionPageTests(unittest.TestCase):
         self.folder = Path(self.temp.name)
         self.image = self.folder / "sample.jpg"
         Image.new("RGB", (32, 32), "white").save(self.image)
-        self.checkpoint = self.folder / "baseline.pt"
+        self.checkpoint = self.folder / "weighted_sampling.pt"
         self.checkpoint.write_bytes(b"test checkpoint placeholder")
-        self.patch("model.CHECKPOINT_PATH", str(self.checkpoint))
+        self.patch("prediction.DEMO_CHECKPOINT_PATH", self.checkpoint)
         self.load = self.patch("predict.load_model", return_value=object())
         self.predict = self.patch(
             "predict.predict_probabilities", return_value=[0.02, 0.03, 0.04, 0.01, 0.08, 0.80, 0.02]
@@ -52,9 +52,11 @@ class PredictionPageTests(unittest.TestCase):
         return app
 
     def assert_viewer(self, app):
-        self.assertTrue(
-            app.get("image") or app.get("imgs"), "Original image should remain visible"
-        )
+        images = app.get("image") or app.get("imgs")
+        self.assertTrue(any(
+            "weighted_sampling.pt" not in img.caption
+            for image in images for img in image.proto.imgs
+        ), "Original image should remain visible separately from the saved matrix")
 
     def test_no_image_does_not_infer(self):
         app = self.page(sample=False)
@@ -74,6 +76,7 @@ class PredictionPageTests(unittest.TestCase):
         self.assertEqual(list(table["Model probability"])[5], "80.00%")
         self.assertIn("Model probability: 80.00%", text)
         self.assert_viewer(app)
+        self.load.assert_called_once_with(str(self.checkpoint), device="cpu")
         app.run()
         self.assertEqual(self.load.call_count, 1)
         self.checkpoint.write_bytes(b"replacement checkpoint with a different size")
@@ -82,11 +85,25 @@ class PredictionPageTests(unittest.TestCase):
 
     def test_missing_checkpoint_keeps_viewer_and_no_results(self):
         self.checkpoint.unlink()
+        baseline = self.folder / "baseline_resnet50.pt"
+        baseline.write_bytes(b"baseline must not be used as a fallback")
+        self.patch("model.CHECKPOINT_PATH", str(baseline))
         app = self.page()
         self.assertTrue(any("checkpoint is missing" in item.value for item in app.info))
         self.predict.assert_not_called()
+        self.load.assert_not_called()
         self.assertEqual(len(app.table), 0)
         self.assert_viewer(app)
+
+    def test_weighted_model_and_matching_matrix_are_identified(self):
+        app = self.page(sample=False)
+        text = "\n".join(item.value for item in app.markdown)
+        self.assertIn("ResNet-50 with weighted sampling", text)
+        self.assertIn("weighted_sampling.pt", text)
+        self.assertIn("Validation — 1,519 HAM10000 images", text)
+        images = app.get("image") or app.get("imgs")
+        captions = [img.caption for image in images for img in image.proto.imgs]
+        self.assertTrue(any("weighted_sampling.pt" in caption for caption in captions))
 
     def test_incompatible_checkpoint_keeps_viewer(self):
         self.load.side_effect = ValueError("class order mismatch")
