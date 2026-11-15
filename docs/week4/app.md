@@ -39,10 +39,7 @@ data/raw/HAM10000_images_part_1/
 data/raw/HAM10000_images_part_2/
 ```
 
-Keep the original JPG names. If your files follow the older `DATA.md` layout
-with an extra `HAM10000/` directory, the existing sample picker will not find
-those folders. Extract the archives into the locations above, or use image
-upload. The metadata location can be overridden before launch, for example:
+Keep the original JPG names. Both layouts work: files directly in data/raw/, or inside data/raw/HAM10000/ (the layout in DATA.md). The metadata location can be overridden before launch, for example:
 
 ```powershell
 $env:HAM10000_METADATA_PATH = "data/raw/HAM10000/HAM10000_metadata"
