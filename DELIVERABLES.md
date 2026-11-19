@@ -57,6 +57,79 @@ PMs will ensure DATA.md records the source, downloaded version, access instructi
 
 Keep datasets local under data/raw/. Do not commit raw images, archives, or raw metadata to GitHub.
 
+## Week 7: Final Model, Live Demo and Poster
+
+**Due: Saturday, November 21 at noon Central.** The PMs build the poster Saturday and Sunday and submit it Sunday, November 22. That deadline is hard: the club prints posters Monday, and a project without a poster can't present.
+**Progress sync: Friday, November 20, 6–7 PM Central in Project Sync.**
+
+**Goal:** Lock the final model and test it once, put the demo online behind a QR code, and give the PMs the figures and short text the poster needs. The repo should be finished: code pushed, PRs merged and docs complete.
+
+**Project Showcase:** Tuesday, December 1, 6:30–8:30 PM, first-floor Zach ConocoPhillips Atriums. Presenters arrive 6:00–6:30 to set up, in business formal. We need 2–3 people presenting at a time, so tell us if you can come.
+
+Week 6 carryover counts toward Week 7. Finish it first.
+
+### Poster rules (apply to every figure you send)
+
+- Keep it short. The poster should be mostly visuals.
+- Figures go on a white or light-gray background, saved as PNGs at 300 DPI or higher, so they don't pixelate when printed at 36 by 48 inches.
+- Give every figure a one-line caption. The PMs will number them.
+- Label whether each result is from the validation or the test split.
+
+### Data & Analysis
+
+**Finish first (Week 6)**
+
+- Fix PR #86: the two error patterns should be model mistakes from the confusion matrix (nv predicted as vasc, df and mel). Then merge it.
+- Get the Week 2 audit README and notebook into `main` (branches `issue-21/documentation` and `issue-40/integration`).
+- Fix the data paths in `DATA.md`.
+
+**New this week (poster: Introduction, Methods, Discussion)**
+
+- Figure: class distribution of all 10,015 images as a bar chart, so the 67% nv imbalance is visible.
+- Figure or short text: how the split works (70/15/15, grouped by lesion), with the image counts per split.
+- 3–4 bullets on dataset limitations for the Discussion. For example: lesion IDs instead of patient IDs, skin-tone and population coverage, dermoscopy-only images, and very few df and vasc images.
+- Add the license (CC BY-NC 4.0) and citation to `DATA.md`, and send the PMs the citation for References.
+
+### Modeling & Experiments
+
+**Finish first (Week 6)**
+
+- Saideep: open a PR from `issue-83/model-card` into `main`. The model card and requirements are ready for review.
+
+**New this week (poster: Methods, Results)**
+
+- Reproduce the layer4 fine-tune with `src/finetune.py` (PR #91). It unfreezes ResNet-50's last block, keeps weighted sampling, and keeps the epoch with the best validation macro F1. A PM test run reached validation macro F1 0.579, compared with 0.320 for `weighted_sampling.pt`. Confirm you get about the same, then upload the checkpoint to the shared Drive folder.
+- Add benign vs. malignant metrics and a `--split test` option to `src/evaluation.py`. Group mel, bcc and akiec as malignant or pre-cancerous, and nv, bkl, df and vasc as benign. Report sensitivity, specificity and binary macro F1. Always report them next to the 7-class macro F1, never instead of it.
+- Lock the fine-tuned model as final, then run the test set **once**. By Saturday noon, report test macro F1, per-class recall, the benign vs. malignant metrics, and the test confusion matrix. Don't change the model after seeing the test results.
+- Update the model card for the final model.
+- Figures: per-class recall for the baseline, weighted sampling and fine-tuned models, the final confusion matrix with readable labels, and a simple training diagram (image → ResNet-50 with layer4 fine-tuned → 7-class head).
+
+### Explainability & App
+
+**Finish first (Week 6)**
+
+- Write the "Running the demo" section of the README.
+
+**New this week (poster: Methods, Results, QR code)**
+
+- Switch the app to the fine-tuned checkpoint and show its confusion matrix.
+- Deploy the app online on Streamlit Community Cloud. The PMs will host the final checkpoint as a download on the repo's GitHub Releases page, so the deployed app downloads it when it starts. Send the PMs the live link by Saturday noon so they can make the QR code. Tell us at Friday's sync if deployment is blocked, and we'll link the QR code to the repo instead.
+- Figure: 2–3 Grad-CAM examples from the fine-tuned model (image + overlay + predicted class), including one where the heatmap misses the lesion.
+- Figure: a screenshot of the app's full flow (upload → prediction → heatmap).
+
+### PMs
+
+- Build the poster from the officers' Canva template, add the QR code, and submit it by Sunday, November 22.
+- Host the final checkpoint on GitHub Releases for the deployed app.
+- Write the Objective, Conclusion and References. Put the team sections together and number the figures.
+- Rewrite the README from each team's section, close finished issues, and delete merged branches.
+
+### How to submit
+
+- Put your name next to every task on your team's Week 7 issue.
+- Post finished figures and text on your team's Week 7 issue, and commit them under `docs/week7/`.
+- Raise blockers at Friday's sync at the latest. After Saturday noon there's no time to fix anything before the poster goes in.
+
 ## Week 6: Final Experiments and Repo Polish
 
 **Due: Sunday, November 15 at noon Central**, before the in-person Project Design Review (2–5 PM).
