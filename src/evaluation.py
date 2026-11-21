@@ -1,4 +1,7 @@
-"""Validation macro F1 and confusion matrix for Issue #41."""
+"""Macro F1, per-class recall, benign vs. malignant metrics and confusion matrix (Issues #41, #94).
+
+Evaluates the validation split by default. Use --split test only once, on the locked final model.
+"""
 
 import json
 from pathlib import Path
@@ -75,12 +78,50 @@ def evaluate_validation(model, validation_loader, device):
     }
 
 
-def save_validation_results(results, output_dir):
+# Malignant or pre-cancerous classes; the other four are benign.
+MALIGNANT = ("akiec", "bcc", "mel")
+
+
+def benign_malignant_metrics(matrix, class_names=CLASS_NAMES):
+    """Group a 7x7 confusion matrix into malignant vs. benign and score it.
+
+    Computed from the 7-class predictions; no separate binary model is trained.
+    """
+    import numpy as np
+
+    matrix = np.asarray(matrix)
+    mal = [i for i, name in enumerate(class_names) if name in MALIGNANT]
+    ben = [i for i in range(len(class_names)) if i not in mal]
+    tp = matrix[np.ix_(mal, mal)].sum()
+    fn = matrix[np.ix_(mal, ben)].sum()
+    fp = matrix[np.ix_(ben, mal)].sum()
+    tn = matrix[np.ix_(ben, ben)].sum()
+
+    def f1(precision_num, precision_den, recall_num, recall_den):
+        precision = precision_num / precision_den if precision_den else 0.0
+        recall = recall_num / recall_den if recall_den else 0.0
+        return 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+
+    return {
+        "malignant_classes": list(MALIGNANT),
+        "sensitivity": float(tp / (tp + fn)) if tp + fn else 0.0,
+        "specificity": float(tn / (tn + fp)) if tn + fp else 0.0,
+        "binary_macro_f1": float(
+            (f1(tp, tp + fp, tp, tp + fn) + f1(tn, tn + fn, tn, tn + fp)) / 2
+        ),
+    }
+
+
+SPLIT_NAMES = {"val": "validation", "test": "test"}
+
+
+def save_validation_results(results, output_dir, split="val"):
     """Save metrics as JSON and the confusion matrix as a PNG."""
+    name = SPLIT_NAMES[split]
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    with (output_dir / "validation_metrics.json").open("w") as file:
+    with (output_dir / f"{name}_metrics.json").open("w") as file:
         json.dump(results, file, indent=2, allow_nan=False)
 
     figure, axis = plt.subplots(figsize=(8, 7))
@@ -92,9 +133,9 @@ def save_validation_results(results, output_dir):
     import numpy as np
     display.confusion_matrix = np.asarray(display.confusion_matrix)
     display.plot(ax=axis, cmap="Blues", values_format="d", colorbar=False)
-    axis.set_title("Validation confusion matrix")
+    axis.set_title(f"{name.capitalize()} confusion matrix")
     figure.tight_layout()
-    figure.savefig(output_dir / "validation_confusion_matrix.png", dpi=160)
+    figure.savefig(output_dir / f"{name}_confusion_matrix.png", dpi=160)
     plt.close(figure)
 
 
@@ -114,18 +155,26 @@ def main():
     parser.add_argument("--image-dir2", default="data/raw/HAM10000_images_part_2")
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu")
+    parser.add_argument(
+        "--split",
+        choices=["val", "test"],
+        default="val",
+        help="Use test only once, on the locked final model.",
+    )
     args = parser.parse_args()
     if args.batch_size < 1:
         parser.error("--batch-size must be positive")
 
     model = load_model(args.checkpoint, args.device)
     dataset = SkinLesionDataset(
-        args.splits, "val", args.image_dir1, args.image_dir2, transform=transform
+        args.splits, args.split, args.image_dir1, args.image_dir2, transform=transform
     )
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
     results = evaluate_validation(model, loader, args.device)
+    results["benign_vs_malignant"] = benign_malignant_metrics(results["confusion_matrix"])
+    results["split"] = args.split
     results["checkpoint"] = args.checkpoint.name
-    save_validation_results(results, args.output_dir)
+    save_validation_results(results, args.output_dir, args.split)
     print(json.dumps(results, indent=2))
 
 
