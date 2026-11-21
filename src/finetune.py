@@ -100,6 +100,7 @@ def main():
     parser.add_argument("--weighting", choices=["inverse", "sqrt"], default="inverse")
     parser.add_argument("--head-lr", type=float, default=1e-3)
     parser.add_argument("--layer4-lr", type=float, default=1e-4)
+    parser.add_argument("--unfreeze-layer3", action="store_true", help="also train layer3 (same lr as layer4)")
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--seed", type=int, default=42)
@@ -113,8 +114,10 @@ def main():
     # Pretrained ResNet-50 with every layer frozen and a new 7-class head (same as training.py),
     # then unfreeze the last block.
     model = build_model()
-    for p in model.layer4.parameters():
-        p.requires_grad = True
+    backbone = [model.layer3, model.layer4] if args.unfreeze_layer3 else [model.layer4]
+    for block in backbone:
+        for p in block.parameters():
+            p.requires_grad = True
     model.to(device)
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Trainable parameters: {trainable:,}")
@@ -122,7 +125,7 @@ def main():
     optimizer = torch.optim.SGD(
         [
             {"params": model.fc.parameters(), "lr": args.head_lr},
-            {"params": model.layer4.parameters(), "lr": args.layer4_lr},
+            {"params": [p for block in backbone for p in block.parameters()], "lr": args.layer4_lr},
         ],
         momentum=0.9,
     )
