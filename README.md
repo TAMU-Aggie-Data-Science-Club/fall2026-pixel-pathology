@@ -44,6 +44,63 @@ Build:
 
 See [`DELIVERABLES.md`](DELIVERABLES.md) for the suggested deliverable breakdown and rough timeline.
 
+## Running the demo
+
+Run these commands from the repository root (the folder containing this README).
+Use Python 3.10 or newer with compatible PyTorch/torchvision wheels.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m streamlit run app/app.py
+```
+
+On Windows, activate with `.venv\Scripts\activate` instead. If you already have
+an environment, activate it and install the requirements; do not recreate it.
+Streamlit 1.51 or newer is required for the animated walkthrough. The dark theme
+loads from `.streamlit/config.toml` when launched from the repository root.
+
+Download **finetune_layer34.pt** from the team's
+[final-model release](https://github.com/TAMU-Aggie-Data-Science-Club/fall2026-pixel-pathology/releases/tag/model-finetune-layer34-v1)
+and place it at `models/finetune_layer34.pt`. Do not rename baseline weights or
+commit checkpoints. The documented final checkpoint SHA-256 is:
+
+```text
+a22ca8119ecb8c69c274ba12589ed7b2213ae720c5fdde7ade5cdd0c34f9fabd
+```
+
+See [the final-model report](docs/week7/final_model.md) for provenance. The app uses this
+final fine-tuned checkpoint for both predictions and Grad-CAM, without a baseline fallback.
+Its saved confusion matrix describes **test, 1,494 images**; a separate line
+checks the local checkpoint hash before identifying those results as a match.
+The final model fine-tunes ResNet-50 layers 3 and 4 plus its seven-class head.
+Saved test macro F1 is 0.644 and accuracy is 77.8%. These describe the held-out
+dataset, not the probability or correctness of an individual prediction.
+
+You can upload a JPG/PNG without downloading the full dataset. To enable the sample
+picker and known labels, use either supported layout:
+
+```text
+data/raw/HAM10000_metadata.csv
+data/raw/HAM10000_images_part_1/
+data/raw/HAM10000_images_part_2/
+```
+
+The same three items may instead live inside `data/raw/HAM10000/`. An optional
+`HAM10000_METADATA_PATH` environment variable can point to a different metadata CSV.
+Images and metadata stay local. See [DATA.md](DATA.md) for source and reuse terms.
+
+The dashboard shows real model outputs. The walkthrough replays those outputs;
+the network sketch is labeled conceptual and is not a view of internal activations.
+This is an educational project, not a diagnostic tool.
+
+To run the regression checks:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 ## Repository map
 
 | File / folder | Purpose |
