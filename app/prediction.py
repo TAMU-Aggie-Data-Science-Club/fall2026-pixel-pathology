@@ -9,7 +9,20 @@ import streamlit as st
 # Modeling's modules import each other by bare name (see its handoff docs).
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-DEMO_CHECKPOINT_PATH = Path(__file__).resolve().parent.parent / "models" / "weighted_sampling.pt"
+DEMO_CHECKPOINT_PATH = Path(__file__).resolve().parent.parent / "models" / "finetune_layer34.pt"
+
+
+def ready_checkpoint():
+    """Return the checkpoint path, downloading it first if it is missing."""
+    from checkpoint import ensure_checkpoint
+
+    if DEMO_CHECKPOINT_PATH.exists():
+        return DEMO_CHECKPOINT_PATH
+    try:
+        with st.spinner("Downloading the model (first run only, this can take a minute)..."):
+            return ensure_checkpoint(DEMO_CHECKPOINT_PATH)
+    except Exception as error:
+        raise FileNotFoundError(f"Could not download the checkpoint: {error}") from error
 
 
 @st.cache_resource
@@ -24,7 +37,7 @@ def show_prediction(source, readable_names):
     """Display real probabilities, or a pending message without stopping the page."""
     st.divider()
     st.markdown("#### Step 2 – Model prediction")
-    st.caption("Model: ResNet-50 with weighted sampling — weighted_sampling.pt")
+    st.caption("Model: ResNet-50, layer3 + layer4 fine-tuned with weighted sampling — finetune_layer34.pt")
     st.caption("Known dataset labels above come from metadata, not from the model.")
     if source is None:
         st.info("Prediction pending — upload or select an image to begin.")
@@ -34,13 +47,13 @@ def show_prediction(source, readable_names):
         from model import CLASS_NAMES
         from predict import predict_probabilities
 
-        checkpoint = DEMO_CHECKPOINT_PATH
+        checkpoint = ready_checkpoint()
         identity = checkpoint.stat()
         model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
     except FileNotFoundError:
         st.info(
-            "Prediction pending — the weighted-sampling checkpoint is missing. "
-            "Put Modeling's weighted_sampling.pt in models/; see docs/week6/app.md. "
+            "Prediction pending — the final checkpoint is missing. "
+            "Put finetune_layer34.pt in models/; see docs/week7/final_model.md. "
             "You can still view your image."
         )
         return

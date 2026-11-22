@@ -1,6 +1,6 @@
 # Grad-CAM examples
 
-Model: ResNet-50 with weighted sampling (`weighted_sampling.pt`), the demo's final checkpoint. Each screenshot shows the known dataset label, the model's prediction with all seven probabilities, and the Grad-CAM overlay for the predicted class. Images are HAM10000 samples.
+Model: ResNet-50 with weighted sampling (`weighted_sampling.pt`), the Week 6 demo checkpoint. Each screenshot shows the known dataset label, the model's prediction with all seven probabilities, and the Grad-CAM overlay for the predicted class. Images are HAM10000 samples.
 
 These are three single images chosen to illustrate the heatmaps. They are not an evaluation of the model.
 

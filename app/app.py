@@ -28,14 +28,14 @@ show_gradcam(source, CLASS_NAMES)
 
 st.divider()
 st.subheader("Model performance — Confusion matrix")
-st.markdown("**Model:** ResNet-50 with weighted sampling — `weighted_sampling.pt`")
-st.markdown("**Split:** Validation — 1,519 HAM10000 images")
+st.markdown("**Model:** ResNet-50, layer3 + layer4 fine-tuned with weighted sampling — `finetune_layer34.pt`")
+st.markdown("**Split:** Test — 1,494 HAM10000 images (evaluated once)")
 st.image(
-    str(Path(__file__).resolve().parent.parent / "docs" / "week4" / "weighted_sampling_matrix.png"),
-    caption="ResNet-50 with weighted sampling (weighted_sampling.pt) — validation split, 1,519 images",
+    str(Path(__file__).resolve().parent.parent / "docs" / "week7" / "figures" / "confusion_matrix_test.png"),
+    caption="finetune_layer34.pt — test split, 1,494 images",
 )
 st.caption(
-    "Rows are true dataset labels; columns are model predictions. Values are image counts. "
-    "This is the saved validation evaluation of weighted_sampling.pt, separate from "
-    "the selected image's prediction. It does not report test-set or clinical performance."
+    "Rows are true dataset labels; columns are model predictions. "
+    "This is the saved test evaluation of finetune_layer34.pt, separate from "
+    "the selected image's prediction. It does not report clinical performance."
 )

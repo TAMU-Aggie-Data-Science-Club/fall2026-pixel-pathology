@@ -27,7 +27,7 @@ class PredictionPageTests(unittest.TestCase):
         self.folder = Path(self.temp.name)
         self.image = self.folder / "sample.jpg"
         Image.new("RGB", (32, 32), "white").save(self.image)
-        self.checkpoint = self.folder / "weighted_sampling.pt"
+        self.checkpoint = self.folder / "finetune_layer34.pt"
         self.checkpoint.write_bytes(b"test checkpoint placeholder")
         self.patch("prediction.DEMO_CHECKPOINT_PATH", self.checkpoint)
         self.load = self.patch("predict.load_model", return_value=object())
@@ -54,7 +54,7 @@ class PredictionPageTests(unittest.TestCase):
     def assert_viewer(self, app):
         images = app.get("image") or app.get("imgs")
         self.assertTrue(any(
-            "weighted_sampling.pt" not in img.caption
+            "finetune_layer34.pt" not in img.caption
             for image in images for img in image.proto.imgs
         ), "Original image should remain visible separately from the saved matrix")
 
@@ -88,6 +88,7 @@ class PredictionPageTests(unittest.TestCase):
         baseline = self.folder / "baseline_resnet50.pt"
         baseline.write_bytes(b"baseline must not be used as a fallback")
         self.patch("model.CHECKPOINT_PATH", str(baseline))
+        self.patch("checkpoint.ensure_checkpoint", side_effect=OSError("offline"))
         app = self.page()
         self.assertTrue(any("checkpoint is missing" in item.value for item in app.info))
         self.predict.assert_not_called()
@@ -98,12 +99,12 @@ class PredictionPageTests(unittest.TestCase):
     def test_weighted_model_and_matching_matrix_are_identified(self):
         app = self.page(sample=False)
         text = "\n".join(item.value for item in app.markdown)
-        self.assertIn("ResNet-50 with weighted sampling", text)
-        self.assertIn("weighted_sampling.pt", text)
-        self.assertIn("Validation — 1,519 HAM10000 images", text)
+        self.assertIn("layer3 + layer4 fine-tuned with weighted sampling", text)
+        self.assertIn("finetune_layer34.pt", text)
+        self.assertIn("Test — 1,494 HAM10000 images", text)
         images = app.get("image") or app.get("imgs")
         captions = [img.caption for image in images for img in image.proto.imgs]
-        self.assertTrue(any("weighted_sampling.pt" in caption for caption in captions))
+        self.assertTrue(any("finetune_layer34.pt" in caption for caption in captions))
 
     def test_incompatible_checkpoint_keeps_viewer(self):
         self.load.side_effect = ValueError("class order mismatch")
