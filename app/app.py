@@ -1,4 +1,4 @@
-"""Default demo: weighted model, presentation dashboard and animated walkthrough."""
+"""Default demo: final fine-tuned model, presentation dashboard and animated walkthrough."""
 
 import streamlit as st
 

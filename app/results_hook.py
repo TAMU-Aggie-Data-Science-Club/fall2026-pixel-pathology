@@ -8,7 +8,7 @@ them to the presentation page, register a function that draws them:
 
 Nothing is drawn, and no placeholder is shown, until something is registered. Register
 module-level functions (not lambdas) so a Streamlit rerun does not add duplicates.
-Any results text should name the checkpoint and the validation split it describes.
+Any results text should name the checkpoint and the evaluation split it describes.
 """
 
 import streamlit as st

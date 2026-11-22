@@ -23,8 +23,8 @@ from ui_theme import as_display_image, heatmap_legend, probability_bars, section
 STATUS_MESSAGES = {
     MISSING_CHECKPOINT: (
         "info",
-        "Prediction pending — the weighted-sampling checkpoint is missing. "
-        "Put Modeling's weighted_sampling.pt in models/; see docs/week6/app.md. "
+        "Prediction pending — the final model checkpoint is missing. "
+        "Put Modeling's finetune_layer34.pt in models/; see docs/week7/final_model.md. "
         "You can still view your image.",
     ),
     MISSING_DEPENDENCIES: (
@@ -113,7 +113,7 @@ def _render_results(outputs):
 
     if outputs.status != OK:
         show_status(outputs.status)
-        st.caption("Pending — a Grad-CAM overlay needs a readable image and the weighted-sampling checkpoint.")
+        st.caption("Pending — a Grad-CAM overlay needs a readable image and the final model checkpoint.")
         return
 
     code = outputs.class_codes[outputs.top]

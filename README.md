@@ -61,19 +61,22 @@ an environment, activate it and install the requirements; do not recreate it.
 Streamlit 1.51 or newer is required for the animated walkthrough. The dark theme
 loads from `.streamlit/config.toml` when launched from the repository root.
 
-Download **weighted_sampling.pt** from the team's
-[shared checkpoint folder](https://drive.google.com/drive/folders/1cHydYMl7UWaCWTJKq-wWhFXRHmJ_Jc8R)
-and place it at `models/weighted_sampling.pt`. Do not rename baseline weights or
-commit checkpoints. The documented weighted checkpoint SHA-256 is:
+Download **finetune_layer34.pt** from the team's
+[final-model release](https://github.com/TAMU-Aggie-Data-Science-Club/fall2026-pixel-pathology/releases/tag/model-finetune-layer34-v1)
+and place it at `models/finetune_layer34.pt`. Do not rename baseline weights or
+commit checkpoints. The documented final checkpoint SHA-256 is:
 
 ```text
-a77cee14c7c19292fe93ad2164888ebaff7723ac59da5511c341d6fe35d82bc9
+a22ca8119ecb8c69c274ba12589ed7b2213ae720c5fdde7ade5cdd0c34f9fabd
 ```
 
-See [the checkpoint handoff](docs/week6/app.md) for provenance. The app uses this
-weighted checkpoint for both predictions and Grad-CAM, without a baseline fallback.
-Its saved confusion matrix describes **validation, 1,519 images**; a separate line
+See [the final-model report](docs/week7/final_model.md) for provenance. The app uses this
+final fine-tuned checkpoint for both predictions and Grad-CAM, without a baseline fallback.
+Its saved confusion matrix describes **test, 1,494 images**; a separate line
 checks the local checkpoint hash before identifying those results as a match.
+The final model fine-tunes ResNet-50 layers 3 and 4 plus its seven-class head.
+Saved test macro F1 is 0.644 and accuracy is 77.8%. These describe the held-out
+dataset, not the probability or correctness of an individual prediction.
 
 You can upload a JPG/PNG without downloading the full dataset. To enable the sample
 picker and known labels, use either supported layout:

@@ -84,7 +84,7 @@ class GradCamPageTests(unittest.TestCase):
         folder = Path(temp.name)
         image = folder / "sample.jpg"
         Image.fromarray((np.random.rand(64, 64, 3) * 255).astype("uint8")).save(image)
-        checkpoint = folder / "weighted_sampling.pt"
+        checkpoint = folder / "finetune_layer34.pt"
         self.checkpoint = checkpoint
         checkpoint.write_bytes(b"placeholder")
         self.patch("prediction.DEMO_CHECKPOINT_PATH", checkpoint)

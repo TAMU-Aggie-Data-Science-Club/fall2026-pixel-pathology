@@ -21,7 +21,7 @@ from demo_outputs import Outputs, OK, NO_IMAGE, get_outputs
 from flow_payload import build_payload
 from gradcam import overlay_heatmap
 from model import CLASS_NAMES
-from results_panel import WEIGHTED_SHA256, verification_message
+from results_panel import FINAL_MODEL_SHA256, verification_message
 
 
 class PresentationHelperTests(unittest.TestCase):
@@ -31,15 +31,16 @@ class PresentationHelperTests(unittest.TestCase):
 
     def test_results_require_full_hash_match(self):
         self.assertIn("Matches the app\'s selected checkpoint file", verification_message(
-            {"name": "weighted_sampling.pt", "sha256": WEIGHTED_SHA256}))
-        for digest in (WEIGHTED_SHA256[:12], "0" * 64):
+            {"name": "finetune_layer34.pt", "sha256": FINAL_MODEL_SHA256}))
+        for digest in (FINAL_MODEL_SHA256[:12], "0" * 64,
+                       "a77cee14c7c19292fe93ad2164888ebaff7723ac59da5511c341d6fe35d82bc9"):
             self.assertIn("Not verified", verification_message(
-                {"name": "weighted_sampling.pt", "sha256": digest}))
+                {"name": "finetune_layer34.pt", "sha256": digest}))
         self.assertIn("Not verified", verification_message(None))
 
     def test_identity_uses_team_path_and_updates_after_replacement(self):
         with tempfile.TemporaryDirectory() as folder:
-            path = Path(folder) / "weighted_sampling.pt"
+            path = Path(folder) / "finetune_layer34.pt"
             with patch("prediction.DEMO_CHECKPOINT_PATH", path):
                 self.assertIsNone(checkpoint_identity())
                 path.write_bytes(b"first")
@@ -82,7 +83,7 @@ class PresentationHelperTests(unittest.TestCase):
         _, changed_image = build_payload(outputs, None)
         self.assertNotEqual(initial, changed_image)
         _, changed_checkpoint = build_payload(outputs, {
-            "name": "weighted_sampling.pt", "sha256": WEIGHTED_SHA256, "short": WEIGHTED_SHA256[:12]})
+            "name": "finetune_layer34.pt", "sha256": FINAL_MODEL_SHA256, "short": FINAL_MODEL_SHA256[:12]})
         self.assertNotEqual(changed_image, changed_checkpoint)
 
     def test_empty_page_has_no_invented_prediction(self):
@@ -98,7 +99,7 @@ class PresentationHelperTests(unittest.TestCase):
         from predict import predict_probabilities
         model = build_model(pretrained=False).eval()
         with tempfile.TemporaryDirectory() as folder:
-            checkpoint = Path(folder) / "weighted_sampling.pt"
+            checkpoint = Path(folder) / "finetune_layer34.pt"
             checkpoint.write_bytes(b"path identity only; loader mocked below")
             image = Path(folder) / "sample.png"
             Image.new("RGB", (300, 250), "pink").save(image)
@@ -115,7 +116,7 @@ class PresentationHelperTests(unittest.TestCase):
 
     def test_rerun_reuses_inference_until_checkpoint_changes(self):
         with tempfile.TemporaryDirectory() as folder:
-            checkpoint = Path(folder) / "weighted_sampling.pt"
+            checkpoint = Path(folder) / "finetune_layer34.pt"
             checkpoint.write_bytes(b"checkpoint")
             image = Path(folder) / "sample.png"
             Image.new("RGB", (32, 32), "white").save(image)
