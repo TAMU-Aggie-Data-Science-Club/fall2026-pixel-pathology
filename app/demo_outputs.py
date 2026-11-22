@@ -17,7 +17,7 @@ import streamlit as st
 from PIL import Image
 
 from gradcam import grad_cam_map, overlay_heatmap
-from prediction import load_cached_model  # also puts src/ on sys.path
+import prediction  # also puts src/ on sys.path
 
 NO_IMAGE = "no_image"
 OK = "ok"
@@ -121,12 +121,11 @@ def get_outputs(source):
     shown = {"original": original, "original_size": original_size}
 
     try:
-        from model import CHECKPOINT_PATH
         import img_loader, predict  # noqa: F401  (fail early if torch/torchvision are missing)
 
-        checkpoint = Path(CHECKPOINT_PATH)
+        checkpoint = Path(prediction.DEMO_CHECKPOINT_PATH)
         identity = checkpoint.stat()
-        model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
+        model = prediction.load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
     except FileNotFoundError:
         return Outputs(status=MISSING_CHECKPOINT, **shown)
     except ImportError:

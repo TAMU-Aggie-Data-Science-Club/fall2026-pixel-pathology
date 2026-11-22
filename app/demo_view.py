@@ -15,31 +15,32 @@ from demo_outputs import (
 )
 from known_label import show_known_label
 from notices import CLASS_NAMES as READABLE_NAMES
-from sample_input import choose_image
+import sample_input
+from image_io import show_image
 from ui_theme import as_display_image, heatmap_legend, probability_bars, section_label
 
 # Same wording as app/prediction.py, so the team's messages stay recognizable.
 STATUS_MESSAGES = {
     MISSING_CHECKPOINT: (
         "info",
-        "Prediction pending: the model checkpoint is missing. "
-        "Follow docs/week3/checkpoint_and_prediction.md to obtain it. "
+        "Prediction pending — the weighted-sampling checkpoint is missing. "
+        "Put Modeling's weighted_sampling.pt in models/; see docs/week6/app.md. "
         "You can still view your image.",
     ),
     MISSING_DEPENDENCIES: (
         "info",
-        "Prediction pending: install Modeling's dependencies using the "
+        "Prediction pending — install Modeling's dependencies using the "
         "setup instructions in docs/week4/app.md. You can still view your image.",
     ),
     BAD_CHECKPOINT: (
         "warning",
-        "Prediction unavailable: the checkpoint could not be loaded. "
+        "Prediction unavailable — the checkpoint could not be loaded. "
         "Check that it is Modeling's agreed seven-class checkpoint. "
         "You can still view your image.",
     ),
     BAD_IMAGE: (
         "warning",
-        "Prediction unavailable: the image could not be processed. "
+        "Prediction unavailable — the image could not be processed. "
         "Choose a valid JPG or PNG; no model result is shown.",
     ),
 }
@@ -58,7 +59,7 @@ def render_demo(identity):
     with rail:
         with st.container(key="rail"):
             section_label("Image source")
-            source, image_id = choose_image()
+            source, image_id = sample_input.choose_image()
             details = st.container()  # filled once the model has run
 
     with main:
@@ -76,6 +77,8 @@ def _render_rail_details(outputs, source, image_id, identity):
     if outputs.original is not None:
         width, height = outputs.original_size
         st.image(outputs.original, caption=f"Selected image · {width} × {height} px")
+    if outputs.status == BAD_IMAGE and outputs.original is None:
+        show_image(source)
     if identity:
         st.markdown(
             '<div class="pp-ckpt"><div class="pp-kicker">Model checkpoint</div><dl>'
@@ -94,6 +97,7 @@ def _render_rail_details(outputs, source, image_id, identity):
 
 def _render_results(outputs):
     if outputs.status == NO_IMAGE:
+        st.info("Prediction pending — upload or select an image to begin.")
         st.markdown(
             '<div class="pp-intro"><div class="pp-kicker">Start here</div>'
             '<div class="pp-intro-title">Choose an image to see what the model does with it.</div>'
@@ -109,6 +113,7 @@ def _render_results(outputs):
 
     if outputs.status != OK:
         show_status(outputs.status)
+        st.caption("Pending — a Grad-CAM overlay needs a readable image and the weighted-sampling checkpoint.")
         return
 
     code = outputs.class_codes[outputs.top]
@@ -123,6 +128,12 @@ def _render_results(outputs):
         "not accuracy and not a diagnosis, and a high score does not mean the prediction is correct.</p></div>",
         unsafe_allow_html=True,
     )
+
+    with st.expander("Seven probabilities in class order"):
+        st.table([
+            {"Code": code, "Class": READABLE_NAMES[code], "Model probability": f"{probability:.2%}"}
+            for code, probability in zip(outputs.class_codes, outputs.probabilities)
+        ])
 
     images, bars = st.columns([7, 5], gap="medium")
     with images:
@@ -140,14 +151,15 @@ def _render_results(outputs):
 def _render_image_pair(outputs):
     if outputs.crop is None or outputs.overlay is None or outputs.heatmap_class is None:
         st.info("Heatmap unavailable for this image. The prediction is still shown.")
+        st.caption("Pending — a Grad-CAM overlay could not be generated for this image.")
         return
     code = outputs.class_codes[outputs.heatmap_class]
-    height, width = outputs.crop.shape[:2]
+    st.markdown(f"Heatmap for the predicted class: **{READABLE_NAMES[code]} ({code})**")
     left, right = st.columns(2, gap="small")
-    left.image(as_display_image(outputs.crop), caption=f"Image the model sees ({width} × {height} crop)")
+    left.image(as_display_image(outputs.crop), caption="Original image (the crop the model sees)")
     right.image(
         as_display_image(outputs.overlay),
-        caption=f"Grad-CAM for {READABLE_NAMES[code]} ({code})",
+        caption="Grad-CAM overlay",
     )
     st.markdown(heatmap_legend(), unsafe_allow_html=True)
     st.caption(

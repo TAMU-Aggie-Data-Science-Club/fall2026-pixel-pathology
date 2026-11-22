@@ -26,9 +26,7 @@ def _sha256(path, modified_ns, size):
 def checkpoint_identity():
     """Return {name, sha256, short, size, modified} for the checkpoint file, or None."""
     try:
-        from model import CHECKPOINT_PATH
-
-        path = Path(CHECKPOINT_PATH)
+        path = Path(prediction.DEMO_CHECKPOINT_PATH)
         info = path.stat()
         digest = _sha256(str(path), info.st_mtime_ns, info.st_size)
     except Exception:

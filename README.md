@@ -44,6 +44,60 @@ Build:
 
 See [`DELIVERABLES.md`](DELIVERABLES.md) for the suggested deliverable breakdown and rough timeline.
 
+## Running the demo
+
+Run these commands from the repository root (the folder containing this README).
+Use Python 3.10 or newer with compatible PyTorch/torchvision wheels.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m streamlit run app/app.py
+```
+
+On Windows, activate with `.venv\Scripts\activate` instead. If you already have
+an environment, activate it and install the requirements; do not recreate it.
+Streamlit 1.51 or newer is required for the animated walkthrough. The dark theme
+loads from `.streamlit/config.toml` when launched from the repository root.
+
+Download **weighted_sampling.pt** from the team's
+[shared checkpoint folder](https://drive.google.com/drive/folders/1cHydYMl7UWaCWTJKq-wWhFXRHmJ_Jc8R)
+and place it at `models/weighted_sampling.pt`. Do not rename baseline weights or
+commit checkpoints. The documented weighted checkpoint SHA-256 is:
+
+```text
+a77cee14c7c19292fe93ad2164888ebaff7723ac59da5511c341d6fe35d82bc9
+```
+
+See [the checkpoint handoff](docs/week6/app.md) for provenance. The app uses this
+weighted checkpoint for both predictions and Grad-CAM, without a baseline fallback.
+Its saved confusion matrix describes **validation, 1,519 images**; a separate line
+checks the local checkpoint hash before identifying those results as a match.
+
+You can upload a JPG/PNG without downloading the full dataset. To enable the sample
+picker and known labels, use either supported layout:
+
+```text
+data/raw/HAM10000_metadata.csv
+data/raw/HAM10000_images_part_1/
+data/raw/HAM10000_images_part_2/
+```
+
+The same three items may instead live inside `data/raw/HAM10000/`. An optional
+`HAM10000_METADATA_PATH` environment variable can point to a different metadata CSV.
+Images and metadata stay local. See [DATA.md](DATA.md) for source and reuse terms.
+
+The dashboard shows real model outputs. The walkthrough replays those outputs;
+the network sketch is labeled conceptual and is not a view of internal activations.
+This is an educational project, not a diagnostic tool.
+
+To run the regression checks:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 ## Repository map
 
 | File / folder | Purpose |

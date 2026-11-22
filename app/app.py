@@ -1,41 +1,36 @@
-from pathlib import Path
+"""Default demo: weighted model, presentation dashboard and animated walkthrough."""
 
 import streamlit as st
 
-from known_label import show_known_label
-from gradcam import show_gradcam
-from notices import CLASS_NAMES, show_educational_notice
-from prediction import show_prediction
-from sample_input import choose_image
+# Must be the first Streamlit call on the page.
+st.set_page_config(page_title="Pixel Pathology Demo", layout="wide")
 
-# Dashed upload box, as in the demo sketch.
-st.markdown(
-    "<style>[data-testid='stFileUploaderDropzone']"
-    "{border:1px dashed #bbb;border-radius:0}</style>",
-    unsafe_allow_html=True,
+from checkpoint_identity import checkpoint_identity
+from demo_view import render_demo
+from flow_component import render_flow
+from flow_payload import build_payload
+from results_hook import register_results_renderer, render_results_section
+from results_panel import show_confusion_matrix
+from story import render_story
+from ui_theme import apply_theme, section_heading, show_compact_notice, show_header, show_stats
+
+register_results_renderer(show_confusion_matrix)
+
+apply_theme()
+show_header()
+show_compact_notice()
+show_stats()
+
+identity = checkpoint_identity()
+outputs, source = render_demo(identity)
+
+section_heading(
+    "Walkthrough",
+    "Follow an image through the model",
+    "A replay of what happened to the selected image, from the picture you chose to the heatmap.",
 )
+payload, signature = build_payload(outputs, identity)
+render_flow(payload, signature)
 
-st.title("Pixel Pathology Demo")
-show_educational_notice()
-
-st.divider()
-st.markdown("#### Step 1 – Upload")
-source, image_id = choose_image()
-show_known_label(source, image_id)
-
-show_prediction(source, CLASS_NAMES)
-show_gradcam(source, CLASS_NAMES)
-
-st.divider()
-st.subheader("Model performance — Confusion matrix")
-st.markdown("**Model:** ResNet-50 with weighted sampling — `weighted_sampling.pt`")
-st.markdown("**Split:** Validation — 1,519 HAM10000 images")
-st.image(
-    str(Path(__file__).resolve().parent.parent / "docs" / "week4" / "weighted_sampling_matrix.png"),
-    caption="ResNet-50 with weighted sampling (weighted_sampling.pt) — validation split, 1,519 images",
-)
-st.caption(
-    "Rows are true dataset labels; columns are model predictions. Values are image counts. "
-    "This is the saved validation evaluation of weighted_sampling.pt, separate from "
-    "the selected image's prediction. It does not report test-set or clinical performance."
-)
+render_story()
+render_results_section()

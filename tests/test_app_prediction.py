@@ -22,6 +22,7 @@ from notices import CLASS_NAMES as READABLE_NAMES
 class PredictionPageTests(unittest.TestCase):
     def setUp(self):
         st.cache_resource.clear()
+        st.cache_data.clear()
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.folder = Path(self.temp.name)
@@ -29,6 +30,10 @@ class PredictionPageTests(unittest.TestCase):
         Image.new("RGB", (32, 32), "white").save(self.image)
         self.checkpoint = self.folder / "weighted_sampling.pt"
         self.checkpoint.write_bytes(b"test checkpoint placeholder")
+        # Controlled saved-image fixture: tests cover rendering/labels, not matrix values.
+        self.matrix = self.folder / "matrix.png"
+        Image.new("RGB", (32, 32), "white").save(self.matrix)
+        self.patch("results_panel.MATRIX_PATH", self.matrix)
         self.patch("prediction.DEMO_CHECKPOINT_PATH", self.checkpoint)
         self.load = self.patch("predict.load_model", return_value=object())
         self.predict = self.patch(
@@ -44,6 +49,7 @@ class PredictionPageTests(unittest.TestCase):
         return value
 
     def page(self, sample=True):
+        st.cache_data.clear()
         app = AppTest.from_file(str(ROOT / "app" / "app.py"), default_timeout=30).run()
         if sample:
             app.radio[0].set_value("HAM10000 sample").run()
@@ -69,12 +75,15 @@ class PredictionPageTests(unittest.TestCase):
         text = "\n".join(item.value for item in app.markdown)
         self.assertIn("Known dataset label", text)
         self.assertIn("mel — Melanoma", text)
-        self.assertIn("Predicted class: Melanocytic nevi (nv)", text)
+        self.assertIn("Predicted category", text)
+        self.assertIn('class="pp-result-name">Melanocytic nevi</div>', text)
+        self.assertIn('class="pp-code">nv</span>', text)
         table = app.table[0].value
         self.assertEqual(list(table["Code"]), CLASS_NAMES)
         self.assertEqual(list(table["Class"]), [READABLE_NAMES[c] for c in CLASS_NAMES])
         self.assertEqual(list(table["Model probability"])[5], "80.00%")
-        self.assertIn("Model probability: 80.00%", text)
+        self.assertIn('class="pp-big">80.00%</span>', text)
+        self.assertIn("model probability", text)
         self.assert_viewer(app)
         self.load.assert_called_once_with(str(self.checkpoint), device="cpu")
         app.run()

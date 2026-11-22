@@ -78,6 +78,7 @@ class GradCamTests(unittest.TestCase):
 class GradCamPageTests(unittest.TestCase):
     def setUp(self):
         st.cache_resource.clear()
+        st.cache_data.clear()
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         folder = Path(temp.name)
@@ -103,6 +104,7 @@ class GradCamPageTests(unittest.TestCase):
         return [img.caption for element in app.get("image") for img in element.proto.imgs]
 
     def page(self):
+        st.cache_data.clear()
         app = AppTest.from_file(str(ROOT / "app" / "app.py"), default_timeout=60).run()
         app.radio[0].set_value("HAM10000 sample").run()
         self.assertEqual(len(app.exception), 0)
@@ -111,7 +113,7 @@ class GradCamPageTests(unittest.TestCase):
     def test_shows_original_and_overlay_for_predicted_class(self):
         app = self.page()
         text = "\n".join(item.value for item in app.markdown)
-        self.assertIn("Step 3 – Grad-CAM heatmap", text)
+        self.assertIn("Predicted category", text)
         self.assertIn("Heatmap for the predicted class:", text)
         captions = self.image_captions(app)
         self.assertIn("Grad-CAM overlay", captions)

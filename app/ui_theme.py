@@ -1,7 +1,6 @@
 """Presentation styling helpers: CSS loading, header, notice, and small HTML widgets.
 
-Streamlit's own widgets get their dark look from launch-time theme flags (see the command
-in .planning/). This module styles only our custom panels.
+Streamlit's own widgets get their dark look from .streamlit/config.toml. This module styles only our custom panels.
 """
 
 from html import escape
