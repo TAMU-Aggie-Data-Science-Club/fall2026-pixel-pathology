@@ -12,6 +12,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 DEMO_CHECKPOINT_PATH = Path(__file__).resolve().parent.parent / "models" / "finetune_layer34.pt"
 
 
+def ready_checkpoint():
+    """Return the checkpoint path, downloading it first if it is missing."""
+    from checkpoint import ensure_checkpoint
+
+    if DEMO_CHECKPOINT_PATH.exists():
+        return DEMO_CHECKPOINT_PATH
+    try:
+        with st.spinner("Downloading the model (first run only, this can take a minute)..."):
+            return ensure_checkpoint(DEMO_CHECKPOINT_PATH)
+    except Exception as error:
+        raise FileNotFoundError(f"Could not download the checkpoint: {error}") from error
+
+
 @st.cache_resource
 def load_cached_model(checkpoint_path, modified_ns, size):
     """Reuse the model until the checkpoint is replaced or the app restarts."""
@@ -34,7 +47,7 @@ def show_prediction(source, readable_names):
         from model import CLASS_NAMES
         from predict import predict_probabilities
 
-        checkpoint = DEMO_CHECKPOINT_PATH
+        checkpoint = ready_checkpoint()
         identity = checkpoint.stat()
         model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
     except FileNotFoundError:

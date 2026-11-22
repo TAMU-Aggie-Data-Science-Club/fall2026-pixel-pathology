@@ -53,9 +53,9 @@ def show_gradcam(source, readable_names):
         from img_loader import transform
         from model import CLASS_NAMES
         from predict import prepare_image
-        from prediction import DEMO_CHECKPOINT_PATH
+        from prediction import ready_checkpoint
 
-        checkpoint = DEMO_CHECKPOINT_PATH
+        checkpoint = ready_checkpoint()
         identity = checkpoint.stat()
         model = load_cached_model(str(checkpoint), identity.st_mtime_ns, identity.st_size)
 
